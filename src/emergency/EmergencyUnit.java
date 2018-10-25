@@ -1,5 +1,5 @@
 package emergency;
 
-public enum Vehicle {
+public enum EmergencyUnit {
 	AMBULANCE, POLICE, FIREFIGHTER
 }

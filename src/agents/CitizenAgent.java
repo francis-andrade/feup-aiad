@@ -15,4 +15,6 @@ public class CitizenAgent extends Agent {
 		this.coordinates = coordinates;
 		this.dispatcher = dispatcher;
 	}
+	
+	
 }

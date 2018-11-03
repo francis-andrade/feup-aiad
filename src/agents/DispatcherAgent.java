@@ -1,17 +1,21 @@
 package agents;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
+import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.UnreadableException;
+import messages.CallEmergency;
 
 
-public class DispatcherAgent extends Agent{
-	private final ArrayList<CivilProtectionAgent> civilProtectionStations;
+public class DispatcherAgent extends MainAgent{
+	
 	
 	public DispatcherAgent(ArrayList<CivilProtectionAgent> civilProtectionStations) {
-		this.civilProtectionStations = civilProtectionStations;
+		super(civilProtectionStations);
 	}
 	
 	public void init() {
@@ -22,6 +26,20 @@ public class DispatcherAgent extends Agent{
 				ACLMessage msg = myAgent.receive();
 				if(msg != null) {
 					
+					try {
+						CallEmergency callMsg = (CallEmergency) msg.getContentObject();
+						int stationID = getClosestStation(callMsg.getCoordinates().get(0), callMsg.getCoordinates().get(1), callMsg.getInvalidIDs());
+						if(stationID != -1) {
+							AID dest = new AID("station-"+Integer.toString(stationID), AID.ISLOCALNAME);
+							ACLMessage forwardMsg = new ACLMessage(ACLMessage.INFORM);
+							forwardMsg.setContentObject(callMsg);
+							forwardMsg.addReceiver(dest);
+							send(msg);
+						}
+					} catch (UnreadableException | IOException e) {
+						e.printStackTrace();
+					}
+					
 					
 				}
 				else {
@@ -31,10 +49,6 @@ public class DispatcherAgent extends Agent{
 		});
 	}
 	
-	private double calculateDistance(ArrayList<Integer> coordinates1, ArrayList<Integer> coordinates2) {
-		double diffX = coordinates1.get(0) - coordinates2.get(0);
-		double diffY = coordinates1.get(1) - coordinates2.get(1);
-		return Math.sqrt(diffX*diffX+diffY*diffY);
-	}
+	
 
 }

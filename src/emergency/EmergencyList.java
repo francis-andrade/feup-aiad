@@ -22,20 +22,29 @@ public class EmergencyList {
 	}
 
 	private void addAmbulanceEmergencies() {
-		emergencies.add(new Emergency("Appendicitis", 0, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Heart attack", 0, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Epileptic attack", 0, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Stroke", 0, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Anaphylactic shock", 0, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Dismemberment", 0, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Poisoning", 0, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Intoxication", 0, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Overdose", 0, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Cardiac arrest", 0, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Broken limb", 0, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Labor", 0, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Suicide attempt", 0, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Hit and run", 0, EmergencyUnit.AMBULANCE, EmergencyUnit.POLICE));
+		emergencies.add(new Emergency("Appendicitis", 7, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Heart attack", 8, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Panic attack and Anxiety", 4, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Trampling", 8, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Epileptic attack", 6, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Stroke", 9, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Anaphylactic shock", 8, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Fainting", 3, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Dismemberment", 6, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Poisoning", 8, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Intoxication", 2, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Overdose", 9, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Cardiac arrest", 10, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Split arm", 2, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Starting back", 3, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Broken limb", 3, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Break pulse", 2, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Fall of person", 6, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Suicide attempt", 9, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Labor", 6, EmergencyUnit.AMBULANCE));//Parto!
+		emergencies.add(new Emergency("Electocutaneous", 8, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Broken limb", 3, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Hit and run", 1, EmergencyUnit.AMBULANCE, EmergencyUnit.POLICE));//don't know
 	}
 
 	private void addPoliceEmergencies() {

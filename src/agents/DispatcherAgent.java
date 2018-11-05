@@ -18,7 +18,7 @@ public class DispatcherAgent extends MainAgent{
 		super(civilProtectionStations);
 	}
 	
-	public void init() {
+	protected void setup() {
 		addBehaviour(new CyclicBehaviour(this){
 			
 			@Override

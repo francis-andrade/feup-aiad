@@ -21,64 +21,70 @@ public class EmergencyList {
 		addFirefighterEmergencies();
 	}
 
+	private void addEmergencies() {
+		emergencies.add(new Emergency("Appendicitis", 5,5, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Heart attack", 8,2, EmergencyUnit.AMBULANCE, ));
+		emergencies.add(new Emergency("Panic attack and Anxiety", 4,15, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Trampling", 8,12, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Epileptic attack",14, 6, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Stroke", 9,1, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Anaphylactic shock", 8,1, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Fainting", 3,6, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Dismemberment", 6,8, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Poisoning", 8,2, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Intoxication", 2,4, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Overdose", 9,9, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Cardiac arrest", 10,3, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Broken arm", 2, 7, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Break back", 3,12, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Broken limb", 3,6, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Break pulse", 2,5,  EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Fall of person", 5,40, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Suicide attempt", 9,50, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Labor", 6,69, EmergencyUnit.AMBULANCE));//Parto!
+		emergencies.add(new Emergency("Hit car and run", 1,16, EmergencyUnit.POLICE));//don't know
+		
+		emergencies.add(new Emergency("Bomb threat", 8,29, EmergencyUnit.POLICE));
+		emergencies.add(new Emergency("Bank robbery", 7,9, EmergencyUnit.POLICE));
+		emergencies.add(new Emergency("Robbery theft", 7,13, EmergencyUnit.POLICE));
+		emergencies.add(new Emergency("swindle", 1,199, EmergencyUnit.POLICE));
+		emergencies.add(new Emergency("Mugging", 4,11, EmergencyUnit.POLICE));
+		emergencies.add(new Emergency("Carjacking", 5,27, EmergencyUnit.POLICE)); // pelos riscos que envolve, bater assaltos violento e o andar a alta velocidade a fugir a polícia e o risco que isso implica! 
+		emergencies.add(new Emergency("Lost person", 1,18, EmergencyUnit.POLICE));
+		emergencies.add(new Emergency("Missing person", 5,34, EmergencyUnit.POLICE));
+		emergencies.add(new Emergency("Kidnapping", 8,59, EmergencyUnit.POLICE));
+		emergencies.add(new Emergency("Brawl", 2,8, EmergencyUnit.POLICE));
+		emergencies.add(new Emergency("Shootout", 8,13, EmergencyUnit.POLICE));
+		emergencies.add(new Emergency("Assault", 6,15 EmergencyUnit.POLICE, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Attempted murder", 9,6, EmergencyUnit.POLICE, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Attempted rape", 6,19, EmergencyUnit.POLICE, EmergencyUnit.AMBULANCE));
+		
+		
+		emergencies.add(new Emergency("Electric accident", 8,10, EmergencyUnit.FIREFIGHTER));
+		emergencies.add(new Emergency("Flooding", 9,77, EmergencyUnit.FIREFIGHTER));
+		emergencies.add(new Emergency("Industrial explosion", 10,53, EmergencyUnit.FIREFIGHTER));//já explodiu.. só se houver (risco) possibilidade de explodir mais
+		emergencies.add(new Emergency("Cat stuck in tree", 1,400, EmergencyUnit.FIREFIGHTER));
+		emergencies.add(new Emergency("Domestic fire", 9,22, EmergencyUnit.FIREFIGHTER));
+		emergencies.add(new Emergency("Forest fire", 9,23, EmergencyUnit.FIREFIGHTER));
+		emergencies.add(new Emergency("Industrial urban fire", 9,20, EmergencyUnit.FIREFIGHTER));
+		emergencies.add(new Emergency("Lost in the sea", 9,45, EmergencyUnit.FIREFIGHTER));
+		emergencies.add(new Emergency("Stuck in a cave", 8,111, EmergencyUnit.FIREFIGHTER));
+		emergencies.add(new Emergency("Stuck in the elevator", 2,8, EmergencyUnit.FIREFIGHTER));
+		emergencies.add(new Emergency("Drowning", 9,3, EmergencyUnit.FIREFIGHTER, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Burning", 8,9, EmergencyUnit.FIREFIGHTER, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Fall in a hole", 6,14, EmergencyUnit.FIREFIGHTER, EmergencyUnit.AMBULANCE));
+		emergencies.add(new Emergency("Road accident", 6,12, EmergencyUnit.FIREFIGHTER, EmergencyUnit.AMBULANCE));
+	}
 	private void addAmbulanceEmergencies() {
-		emergencies.add(new Emergency("Appendicitis", 7, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Heart attack", 8, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Panic attack and Anxiety", 4, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Trampling", 8, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Epileptic attack", 6, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Stroke", 9, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Anaphylactic shock", 8, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Fainting", 3, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Dismemberment", 6, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Poisoning", 8, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Intoxication", 2, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Overdose", 9, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Cardiac arrest", 10, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Split arm", 2, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Starting back", 3, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Broken limb", 3, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Break pulse", 2, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Fall of person", 6, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Suicide attempt", 9, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Labor", 6, EmergencyUnit.AMBULANCE));//Parto!
-		emergencies.add(new Emergency("Electocutaneous", 8, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Broken limb", 3, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Hit and run", 1, EmergencyUnit.AMBULANCE, EmergencyUnit.POLICE));//don't know
+	
 	}
 
 	private void addPoliceEmergencies() {
-		emergencies.add(new Emergency("Bomb threat", 0, EmergencyUnit.POLICE));
-		emergencies.add(new Emergency("Bank robbery", 0, EmergencyUnit.POLICE));
-		emergencies.add(new Emergency("Cat burglar", 0, EmergencyUnit.POLICE));
-		emergencies.add(new Emergency("Mugging", 0, EmergencyUnit.POLICE));
-		emergencies.add(new Emergency("Carjacking", 0, EmergencyUnit.POLICE));
-		emergencies.add(new Emergency("Lost person", 0, EmergencyUnit.POLICE));
-		emergencies.add(new Emergency("Missing person", 0, EmergencyUnit.POLICE));
-		emergencies.add(new Emergency("Kidnapping", 0, EmergencyUnit.POLICE));
-		emergencies.add(new Emergency("Brawl", 0, EmergencyUnit.POLICE));
-		emergencies.add(new Emergency("Hostage situation", 0, EmergencyUnit.POLICE));
-		emergencies.add(new Emergency("Shootout", 0, EmergencyUnit.POLICE));
-		emergencies.add(new Emergency("Assault", 0, EmergencyUnit.POLICE, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Attempted murder", 0, EmergencyUnit.POLICE, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Attempted rape", 0, EmergencyUnit.POLICE, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Terrorist attack", 0, EmergencyUnit.POLICE, EmergencyUnit.AMBULANCE, EmergencyUnit.FIREFIGHTER));
-		emergencies.add(new Emergency("Crumbling building", 0, EmergencyUnit.POLICE, EmergencyUnit.AMBULANCE, EmergencyUnit.FIREFIGHTER));
+		
 	}
 
 	private void addFirefighterEmergencies() {
-		emergencies.add(new Emergency("Electric accident", 0, EmergencyUnit.FIREFIGHTER));
-		emergencies.add(new Emergency("Flooding", 0, EmergencyUnit.FIREFIGHTER));
-		emergencies.add(new Emergency("Industrial explosion", 0, EmergencyUnit.FIREFIGHTER));
-		emergencies.add(new Emergency("Cat stuck in tree", 0, EmergencyUnit.FIREFIGHTER));
-		emergencies.add(new Emergency("Domestic fire", 0, EmergencyUnit.FIREFIGHTER));
-		emergencies.add(new Emergency("Forest fire", 0, EmergencyUnit.FIREFIGHTER));
-		emergencies.add(new Emergency("Industrial fire", 0, EmergencyUnit.FIREFIGHTER));
-		emergencies.add(new Emergency("Lost at sea", 0, EmergencyUnit.FIREFIGHTER));
-		emergencies.add(new Emergency("Caved in", 0, EmergencyUnit.FIREFIGHTER));
-		emergencies.add(new Emergency("Stuck in elevator", 0, EmergencyUnit.FIREFIGHTER));
-		emergencies.add(new Emergency("Drowning", 0, EmergencyUnit.FIREFIGHTER, EmergencyUnit.AMBULANCE));
-		emergencies.add(new Emergency("Burning", 0, EmergencyUnit.FIREFIGHTER, EmergencyUnit.AMBULANCE));
+		
 	}
 
 }

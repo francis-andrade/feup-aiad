@@ -11,30 +11,17 @@ public class Emergency implements Serializable{
 	private String name;
 	private int severity;
 	private ArrayList<EmergencyUnit> vehicles;
+	private final int timeDisposed;
 	
-	Emergency(String name, int severity, EmergencyUnit unit) {
+	Emergency(String name, int severity, int timeDisposed, EmergencyUnit... units) {
 		this.name = name;
 		this.severity = severity;
+		this.timeDisposed = timeDisposed;
 		this.vehicles = new ArrayList<EmergencyUnit>();
-		vehicles.add(unit);
+		for (EmergencyUnit unit:units)
+			vehicles.add(unit);
 	}
 	
-	Emergency(String name, int severity, EmergencyUnit unit1, EmergencyUnit unit2) {
-		this.name = name;
-		this.severity = severity;
-		this.vehicles = new ArrayList<EmergencyUnit>();
-		vehicles.add(unit1);
-		vehicles.add(unit2);
-	}
-	
-	Emergency(String name, int severity, EmergencyUnit unit1, EmergencyUnit unit2, EmergencyUnit unit3) {
-		this.name = name;
-		this.severity = severity;
-		this.vehicles = new ArrayList<EmergencyUnit>();
-		vehicles.add(unit1);
-		vehicles.add(unit2);
-		vehicles.add(unit3);
-	}
 	
 	public String getName() {
 		return name;

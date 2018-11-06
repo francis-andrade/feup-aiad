@@ -42,7 +42,7 @@ public class CivilProtectionAgent extends Agent{
 				if(msg != null) {
 					try {
 						CallEmergency callMsg = (CallEmergency) msg.getContentObject();
-						handleEmergency(callMsg);
+						simpleProtocol(callMsg);
 					} catch (UnreadableException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -57,9 +57,6 @@ public class CivilProtectionAgent extends Agent{
 		});
 	}
 	
-	private void handleEmergency(CallEmergency callMsg) {
-		
-	}
 	
 	private void simpleProtocol(CallEmergency callMsg) {
 		

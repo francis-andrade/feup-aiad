@@ -1,10 +1,6 @@
 package utils;
 
-import java.io.IOException;
-import java.io.Serializable;
 
-import jade.core.AID;
-import jade.lang.acl.ACLMessage;
 
 public class Utils {
 	/**
@@ -26,5 +22,7 @@ public class Utils {
 	    return (1d - neg) * y + neg * (1d - y);
 	}
 	
-	
+	public static double currentTime() {
+		return ((double) System.nanoTime())/1000000000;
+	}
 }

@@ -2,7 +2,6 @@ package agents;
 
 import java.util.ArrayList;
 
-import jade.core.Agent;
 
 public abstract class StationAgent extends MainAgent {
 

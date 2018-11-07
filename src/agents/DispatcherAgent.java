@@ -1,10 +1,7 @@
 package agents;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import jade.core.AID;
-import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
@@ -14,6 +11,11 @@ import messages.CallEmergency;
 public class DispatcherAgent extends StationAgent{
 	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public DispatcherAgent(ArrayList<CivilProtectionAgent> civilProtectionStations) {
 		super(civilProtectionStations);
 	}
@@ -21,6 +23,11 @@ public class DispatcherAgent extends StationAgent{
 	protected void setup() {
 		addBehaviour(new CyclicBehaviour(this){
 			
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void action() {
 				ACLMessage msg = myAgent.receive();

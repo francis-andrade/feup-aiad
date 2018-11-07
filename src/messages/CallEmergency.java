@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import emergency.Emergency;
 import emergency.EmergencyUnit;
 import jade.util.leap.Serializable;
+import utils.Utils;
 
-public class CallEmergency implements Serializable{
+public final class CallEmergency implements Serializable{
 
 	/**
 	 * 
@@ -19,13 +20,24 @@ public class CallEmergency implements Serializable{
 	
 	private final ArrayList<Integer> coordinates;
 	
+	private double callTime;
+	
+	private final int citizenID;
+	
 	private boolean passedAllStations;
 	
-	public CallEmergency(ArrayList<Integer> invalidIDs, ArrayList<Emergency> emergencies, ArrayList<Integer> coordinates) {
-		this.invalidIDs = invalidIDs;
+	private int timeDisposed;
+	
+	
+	
+	public CallEmergency(ArrayList<Emergency> emergencies, ArrayList<Integer> coordinates, int citizenID) {
+		this.invalidIDs = new ArrayList<Integer>();
 		this.emergencies = emergencies;
 		this.coordinates = coordinates;
+		this.callTime = -1;
+		this.citizenID = citizenID;
 		this.passedAllStations = false;
+		setTimeDisposed();
 	}
 	
 	public ArrayList<Integer> getInvalidIDs(){
@@ -41,6 +53,10 @@ public class CallEmergency implements Serializable{
 		return coordinates;
 	}
 	
+	public int getTimeDisposed() {
+		return timeDisposed;
+	}
+	
 	public void addInvalidID(int id) {
 		invalidIDs.add(id);
 	}
@@ -51,6 +67,14 @@ public class CallEmergency implements Serializable{
 	
 	public boolean getPassedAllStations() {
 		return passedAllStations;
+	}
+	
+	public double getCallTime() {
+		return callTime;
+	}
+	
+	public int getCitizenID() {
+		return citizenID;
 	}
 	
 	public void setTruePassedAllStations() {
@@ -77,27 +101,27 @@ public class CallEmergency implements Serializable{
 		return emergencyUnits;
 	}
 	
-	public double getProbabilityInjured(int timeArrival) {
+	public double getProbabilityInjured(double d) {
 		double product = 1;
 		
 		for (Emergency emer: emergencies) 
-			product *= (1 - emer.getProbabilityInjured(timeArrival));
+			product *= (1 - emer.getProbabilityInjured(d));
 		
 		
 		return 1 - product;
 	}
 	
-	public double getProbabilityDying(int timeArrival) {
+	public double getProbabilityDying(double d) {
 		double product = 1;
 		
 		for (Emergency emer: emergencies) 
-			product *= (1 - emer.getProbabilityDying(timeArrival));
+			product *= (1 - emer.getProbabilityDying(d));
 		
 		
 		return 1 - product;
 	}
 	
-	public int getTimeDisposed() {
+	public void setTimeDisposed() {
 		int maxTimeDisposed = Integer.MIN_VALUE;
 		for(Emergency emer:emergencies) 
 			if(emer.getTimeDisposed() > maxTimeDisposed) 
@@ -105,8 +129,14 @@ public class CallEmergency implements Serializable{
 			
 		
 		
-		return maxTimeDisposed;
+		timeDisposed = maxTimeDisposed;
 	}
+	
+	
+	public void setCallTime() {
+		this.callTime = Utils.currentTime();
+	}
+	
 	
 	
 

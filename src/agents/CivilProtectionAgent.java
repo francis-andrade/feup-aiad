@@ -2,14 +2,19 @@ package agents;
 
 import java.util.ArrayList;
 
-import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
+import messages.ArrivalEmergency;
 import messages.CallEmergency;
 import utils.Pair;
+import utils.Utils;
 
 public class CivilProtectionAgent extends StationAgent{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final ArrayList<Integer> coordinates;
 	private final int id;
 	private int availableAmbulance;
@@ -39,13 +44,22 @@ public class CivilProtectionAgent extends StationAgent{
 	public void setup() {
 		addBehaviour(new CyclicBehaviour(this){
 
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void action() {
 				ACLMessage msg = myAgent.receive();
 				if(msg != null) {
+					
 					try {
-						CallEmergency callMsg = (CallEmergency) msg.getContentObject();
-						simpleProtocol(callMsg);
+						Object msgObject = msg.getContentObject();
+						if(msgObject instanceof CallEmergency) {
+							CallEmergency callMsg = (CallEmergency) msgObject;
+							simpleProtocol(callMsg);
+						}
 					} catch (UnreadableException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -61,12 +75,17 @@ public class CivilProtectionAgent extends StationAgent{
 		
 		addBehaviour(new CyclicBehaviour(this) {
 			
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			public void action() {
 				if(unlockResources.size() > 0) {
-					double secondsTime = ((double) System.nanoTime())/1000000000;
+					double currentTime = Utils.currentTime();
 					
 					
-					while(secondsTime > ((double) unlockResources.get(0).getKey())) {
+					while(currentTime > ((double) unlockResources.get(0).getKey())) {
 						addResources((boolean[]) unlockResources.get(0).getValue());
 						unlockResources.remove(0);
 					}
@@ -120,9 +139,12 @@ public class CivilProtectionAgent extends StationAgent{
 		boolean[] emergencyUnits = callMsg.getEmergencyUnitsRequired();
 		
 		if(handleResources(emergencyUnits)) {
+			double currentTime = Utils.currentTime();
+			double waitingTime = currentTime-callMsg.getCallTime();
+			double arrivalTime = waitingTime+super.calculateDistance(callMsg.getCoordinates(), coordinates)/40;
+			sendMessage("citizen-"+Integer.toString(callMsg.getCitizenID()), new ArrivalEmergency(arrivalTime, id));
 			double totalTime = callMsg.getTimeDisposed() +2*super.calculateDistance(callMsg.getCoordinates(), coordinates)/40;
-			double secondsTime = ((double) System.nanoTime())/1000000000;
-			double unlockTime = secondsTime + totalTime;
+			double unlockTime = currentTime + totalTime;
 			Pair resources = new Pair(unlockTime, emergencyUnits);
 			boolean addedResources = false;
 			for(int i = unlockResources.size()-1; i >= 0 && addedResources == false; i--)

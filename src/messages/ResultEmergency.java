@@ -20,5 +20,9 @@ public final class ResultEmergency implements Serializable{
 	public EmergencyResult getResult() {
 		return result;
 	}
+	
+	public String toString() {
+		return "EmergencyResult: "+result;
+	}
 
 }

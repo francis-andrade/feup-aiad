@@ -25,5 +25,9 @@ public final class ArrivalEmergency implements Serializable{
 	public int getStationID() {
 		return stationID;
 	}
+	
+	public String toString() {
+		return "arrival Time: "+arrivalTime;
+	}
 
 }

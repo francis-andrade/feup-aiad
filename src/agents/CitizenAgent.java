@@ -2,8 +2,6 @@ package agents;
 
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import emergency.Emergency;
 import emergency.EmergencyResult;
@@ -80,17 +78,15 @@ public class CitizenAgent extends MainAgent {
 						
 						ResultEmergency resultEmergency = new ResultEmergency(result);
 						int stationID = arrival.getStationID();
-						Timer timer = new Timer();
-						timer.schedule(new TimerTask() {
-							
-							public void run() {
-								sendMessage("station-"+Integer.toString(stationID), resultEmergency);
-								Log.handleMessage("citizen-"+Integer.toString(id), resultEmergency, false);
-							}
-						}
-								
-								, (long) (2*arrival.getArrivalTime()+callEmergency.getTimeDisposed())*1000);
 						
+						try {
+							Thread.sleep((long) (2*arrival.getArrivalTime()+callEmergency.getTimeDisposed())*1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						sendMessage("station-"+Integer.toString(stationID), resultEmergency);
+						Log.handleMessage("citizen-"+Integer.toString(id), resultEmergency, false);
 						doDelete();
 						
 					} catch (UnreadableException e) {
@@ -109,19 +105,15 @@ public class CitizenAgent extends MainAgent {
 	
 	private void callEmergency() {
 		if(Math.random() < this.probability) {
-			Timer timer = new Timer();
-			System.out.println("citizen-"+Integer.toString(id)+" started wait of"+Integer.toString((int) emergencyTime)+ " s to call emergency...");
-			timer.schedule(new TimerTask() {
-				
-				public void run() {
-					
-					callEmergency.setCallTime();
-					sendMessage("dispatcher", callEmergency);
-				}
+			System.out.println("citizen-"+Integer.toString(id)+" started wait of "+Integer.toString((int) emergencyTime)+ " s to call emergency...");
+			try {
+				Thread.sleep(emergencyTime*1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			
-					
-					, emergencyTime*1000);
+			callEmergency.setCallTime();
+			sendMessage("dispatcher", callEmergency);
 			
 			Log.handleMessage("citizen-"+Integer.toString(id), callEmergency, false);
 		}

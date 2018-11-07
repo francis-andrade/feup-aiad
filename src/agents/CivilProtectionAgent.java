@@ -7,6 +7,7 @@ import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 import messages.ArrivalEmergency;
 import messages.CallEmergency;
+import utils.Log;
 import utils.Pair;
 import utils.Utils;
 
@@ -30,6 +31,7 @@ public class CivilProtectionAgent extends StationAgent{
 		availablePolice = available[2];
 		availableFirefighter = available[1];
 		unlockResources = new ArrayList<Pair>();
+		waitingEmergencies = new ArrayList<CallEmergency>();
 	}
 	
 	public int getId() {
@@ -57,6 +59,7 @@ public class CivilProtectionAgent extends StationAgent{
 					
 					try {
 						Object msgObject = msg.getContentObject();
+						Log.handleMessage("station-"+Integer.toString(id), msgObject, true);
 						if(msgObject instanceof CallEmergency) {
 							CallEmergency callMsg = (CallEmergency) msgObject;
 							simpleProtocol(callMsg);
@@ -86,7 +89,7 @@ public class CivilProtectionAgent extends StationAgent{
 					double currentTime = Utils.currentTime();
 					
 					
-					while(currentTime > ((double) unlockResources.get(0).getKey())) {
+					while(unlockResources.size() > 0 && currentTime > ((double) unlockResources.get(0).getKey())) {
 						addResources((boolean[]) unlockResources.get(0).getValue());
 						unlockResources.remove(0);
 					}
@@ -143,7 +146,9 @@ public class CivilProtectionAgent extends StationAgent{
 			double currentTime = Utils.currentTime();
 			double waitingTime = currentTime-callMsg.getCallTime();
 			double arrivalTime = waitingTime+super.calculateDistance(callMsg.getCoordinates(), coordinates)/40;
+			ArrivalEmergency arrivalEmergency = new ArrivalEmergency(arrivalTime, id);
 			sendMessage("citizen-"+Integer.toString(callMsg.getCitizenID()), new ArrivalEmergency(arrivalTime, id));
+			Log.handleMessage("station-"+Integer.toString(id), arrivalEmergency, false);
 			double totalTime = callMsg.getTimeDisposed() +2*super.calculateDistance(callMsg.getCoordinates(), coordinates)/40;
 			double unlockTime = currentTime + totalTime;
 			Pair resources = new Pair(unlockTime, emergencyUnits);
@@ -171,8 +176,10 @@ public class CivilProtectionAgent extends StationAgent{
 			else {
 				callMsg.addInvalidID(id);
 				int stationID = getClosestStation(callMsg.getCoordinates().get(0), callMsg.getCoordinates().get(1), callMsg.getInvalidIDs());
-				if(stationID != -1)
+				if(stationID != -1) {
 					sendMessage("station-"+Integer.toString(stationID), callMsg);
+					Log.handleMessage("station-"+Integer.toString(id), callMsg, false);
+				}
 				else {
 					callMsg.clearInvalidIDs();
 					callMsg.setTruePassedAllStations();
@@ -180,8 +187,10 @@ public class CivilProtectionAgent extends StationAgent{
 					if(stationIDSecondPass == id) {
 						waitingEmergencies.add(callMsg);
 					}
-					else if(stationIDSecondPass != -1)
+					else if(stationIDSecondPass != -1) {
 						sendMessage("station-"+Integer.toString(stationIDSecondPass), callMsg);
+						Log.handleMessage("station-"+Integer.toString(id), callMsg, false);
+					}
 				}
 			}
 		}

@@ -12,6 +12,7 @@ import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.wrapper.AgentContainer;
 import jade.wrapper.StaleProxyException;
+import utils.Log;
 import jade.core.Runtime;
 
 public class Launcher {
@@ -33,7 +34,7 @@ public class Launcher {
 		System.out.print("runtime created\n");
 
 		// Create a default profile
-		Profile profile = new ProfileImpl(null, 1200, null);
+		Profile profile = new ProfileImpl(null, 1201, null);
 		System.out.print("profile created\n");
 
 		System.out.println("Launching a whole in-process platform..."+profile);
@@ -46,7 +47,7 @@ public class Launcher {
 		ArrayList<Integer> coordinatesc1 = new ArrayList<Integer>(Arrays.asList(5, 5));
 		ArrayList<Emergency> emergencies1 = new ArrayList<Emergency>();
 		emergencies1.add(EmergencyList.getEmergencies().get(1));
-		CitizenAgent citizen1 = new CitizenAgent(coordinatesc1, emergencies1, 1, 10, 1);
+		CitizenAgent citizen1 = new CitizenAgent(coordinatesc1, emergencies1, 1, 3, 1);
 		
 		ArrayList<Integer> coordinatess1 = new ArrayList<Integer>(Arrays.asList(10, 10));
 		CivilProtectionAgent station1 = new CivilProtectionAgent(coordinatess1, 1, 2, 2, 2);
@@ -57,10 +58,11 @@ public class Launcher {
 		station1.setCivilProtectionStations(civilProtectionList);
 		
 		try {
+			Log.log("Model 1 running -----------");
 			mainContainer.acceptNewAgent("station-1", station1).start();
 			mainContainer.acceptNewAgent("citizen-1", citizen1).start();
 			mainContainer.acceptNewAgent("dispatcher", dispatcher).start();
-			System.out.println("Model 1 running -----------");
+			
 		} catch (StaleProxyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -6,6 +6,7 @@ import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 import messages.CallEmergency;
+import utils.Log;
 
 
 public class DispatcherAgent extends StationAgent{
@@ -35,9 +36,11 @@ public class DispatcherAgent extends StationAgent{
 					
 					try {
 						CallEmergency callMsg = (CallEmergency) msg.getContentObject();
+						Log.handleMessage("dispatcher", callMsg, true);
 						int stationID = getClosestStation(callMsg.getCoordinates().get(0), callMsg.getCoordinates().get(1), callMsg.getInvalidIDs());
 						if(stationID != -1) {
 							sendMessage("station-"+Integer.toString(stationID), callMsg);
+							Log.handleMessage("dispatcher", callMsg, false);
 						}
 					} catch (UnreadableException e) {
 						e.printStackTrace();

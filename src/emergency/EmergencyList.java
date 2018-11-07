@@ -71,6 +71,7 @@ public class EmergencyList {
 	}
 	
 	public static  ArrayList<Emergency> getEmergencies(){
+		handleInstance();
 		return emergencies;
 	}
 	

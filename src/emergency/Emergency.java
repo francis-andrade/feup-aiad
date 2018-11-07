@@ -52,7 +52,7 @@ public class Emergency implements Serializable{
 	}*/
 	
 	public int getTimeDisposed() {
-		return timeDisposed*60;
+		return timeDisposed;
 	}
 	
 	public double getProbabilityInjured(double d) {

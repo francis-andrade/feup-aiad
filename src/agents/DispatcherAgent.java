@@ -17,7 +17,7 @@ public class DispatcherAgent extends StationAgent{
 	private static final long serialVersionUID = 1L;
 
 	public DispatcherAgent(ArrayList<CivilProtectionAgent> civilProtectionStations) {
-		super(civilProtectionStations);
+		this.setCivilProtectionStations(civilProtectionStations);
 	}
 	
 	protected void setup() {

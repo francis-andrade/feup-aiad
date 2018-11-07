@@ -10,11 +10,11 @@ public abstract class StationAgent extends MainAgent {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private final ArrayList<CivilProtectionAgent> civilProtectionStations;
+	private ArrayList<CivilProtectionAgent> civilProtectionStations;
 	
 	
 	
-	public StationAgent(ArrayList<CivilProtectionAgent> civilProtectionStations) {
+	public void setCivilProtectionStations(ArrayList<CivilProtectionAgent> civilProtectionStations) {
 		this.civilProtectionStations = civilProtectionStations;
 	}
 	

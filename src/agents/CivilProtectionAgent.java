@@ -23,8 +23,7 @@ public class CivilProtectionAgent extends StationAgent{
 	private ArrayList<Pair> unlockResources;
 	private ArrayList<CallEmergency> waitingEmergencies;
 	
-	public CivilProtectionAgent(ArrayList<Integer> coordinates, ArrayList<CivilProtectionAgent> civilProtectionStations, int id,int ...available){
-		super(civilProtectionStations);
+	public CivilProtectionAgent(ArrayList<Integer> coordinates,  int id,int ...available){
 		this.coordinates = coordinates;
 		this.id = id;
 		availableAmbulance = available[0];
@@ -40,6 +39,8 @@ public class CivilProtectionAgent extends StationAgent{
 	public ArrayList<Integer> getCoordinates() {
 		return coordinates;
 	}
+	
+	
 	
 	public void setup() {
 		addBehaviour(new CyclicBehaviour(this){

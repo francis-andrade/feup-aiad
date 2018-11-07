@@ -3,23 +3,19 @@ package emergency;
 import java.util.ArrayList;
 
 public class EmergencyList {
-	private ArrayList<Emergency> emergencies;
-	private EmergencyList instance;
+	private static ArrayList<Emergency> emergencies;
+	private static boolean emergenciesSet = false;
 
-	public EmergencyList getInstance() {
-		if (this.instance == null) {
-			this.instance = new EmergencyList();
-		}
-
-		return this.instance;
+	public static void handleInstance() {
+		if (! emergenciesSet) {
+			emergencies = new ArrayList<Emergency>();
+			addEmergencies();
+		}	
 	}
 
-	private EmergencyList() {
-		emergencies = new ArrayList<Emergency>();
-		addEmergencies();
-	}
+	
 
-	private void addEmergencies() {
+	private static void addEmergencies() {
 		emergencies.add(new Emergency("Appendicitis", 5,5, EmergencyUnit.AMBULANCE));
 		emergencies.add(new Emergency("Heart attack", 8,2, EmergencyUnit.AMBULANCE));
 		emergencies.add(new Emergency("Panic attack and Anxiety", 4,15, EmergencyUnit.AMBULANCE));
@@ -72,6 +68,10 @@ public class EmergencyList {
 		emergencies.add(new Emergency("Burning", 8,9, EmergencyUnit.FIREFIGHTER, EmergencyUnit.AMBULANCE));
 		emergencies.add(new Emergency("Fall in a hole", 6,14, EmergencyUnit.FIREFIGHTER, EmergencyUnit.AMBULANCE));
 		emergencies.add(new Emergency("Road accident", 6,12, EmergencyUnit.FIREFIGHTER, EmergencyUnit.AMBULANCE));
+	}
+	
+	public static  ArrayList<Emergency> getEmergencies(){
+		return emergencies;
 	}
 	
 }

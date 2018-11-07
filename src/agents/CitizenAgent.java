@@ -14,6 +14,7 @@ import jade.lang.acl.UnreadableException;
 import messages.ArrivalEmergency;
 import messages.CallEmergency;
 import messages.ResultEmergency;
+import utils.Log;
 
 public class CitizenAgent extends MainAgent {
 	/**
@@ -22,10 +23,10 @@ public class CitizenAgent extends MainAgent {
 	private static final long serialVersionUID = 1L;
 	private final CallEmergency callEmergency;
 	private final double probability;
-	private final long emergencyTime; //milliseconds
+	private final int emergencyTime; //seconds
 	private final int id;
 	
-	public CitizenAgent(ArrayList<Integer> coordinates, ArrayList<Emergency> emergencies, double probability, long emergencyTime, int id) {
+	public CitizenAgent(ArrayList<Integer> coordinates, ArrayList<Emergency> emergencies, double probability, int emergencyTime, int id) {
 		this.id = id;
 		this.callEmergency = new CallEmergency(emergencies, coordinates, this.id);
 		this.probability = probability;
@@ -60,6 +61,7 @@ public class CitizenAgent extends MainAgent {
 				if(msg != null) {
 					try {
 						ArrivalEmergency arrival = (ArrivalEmergency) msg.getContentObject();
+						Log.handleMessage("citizen-"+Integer.toString(id), arrival, true);
 						EmergencyResult result;
 						double probDying = callEmergency.getProbabilityDying(arrival.getArrivalTime());
 						double randomDying = Math.random();
@@ -83,6 +85,7 @@ public class CitizenAgent extends MainAgent {
 							
 							public void run() {
 								sendMessage("station-"+Integer.toString(stationID), resultEmergency);
+								Log.handleMessage("citizen-"+Integer.toString(id), resultEmergency, false);
 							}
 						}
 								
@@ -107,6 +110,7 @@ public class CitizenAgent extends MainAgent {
 	private void callEmergency() {
 		if(Math.random() < this.probability) {
 			Timer timer = new Timer();
+			System.out.println("citizen-"+Integer.toString(id)+" started wait of"+Integer.toString((int) emergencyTime)+ " s to call emergency...");
 			timer.schedule(new TimerTask() {
 				
 				public void run() {
@@ -115,8 +119,11 @@ public class CitizenAgent extends MainAgent {
 					sendMessage("dispatcher", callEmergency);
 				}
 			}
+			
 					
-					, emergencyTime);
+					, emergencyTime*1000);
+			
+			Log.handleMessage("citizen-"+Integer.toString(id), callEmergency, false);
 		}
 	}
 	

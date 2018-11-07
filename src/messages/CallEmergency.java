@@ -138,6 +138,14 @@ public final class CallEmergency implements Serializable{
 	}
 	
 	
-	
+	public void print() {
+		System.out.println("Call Emergency Informations: ");
+		System.out.println("Coordinates: "+Integer.toString(coordinates.get(0))+", "+Integer.toString(coordinates.get(1)));
+		System.out.println("Time Disposed: "+Integer.toString(timeDisposed));
+		System.out.print("Emergencies: ");
+		for(Emergency emer : emergencies)
+			System.out.print(emer.getName()+", ");
+		System.out.println("");
+	}
 
 }

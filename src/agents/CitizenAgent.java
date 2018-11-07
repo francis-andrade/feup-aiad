@@ -13,15 +13,13 @@ import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
 import messages.CallEmergency;
 
-public class CitizenAgent extends Agent {
-	private final int risk;
+public class CitizenAgent extends MainAgent {
 	private final ArrayList<Integer> coordinates;
 	private final CallEmergency emergency;
 	private final double probability;
 	private final long emergencyTime; //milliseconds
 	
-	public CitizenAgent(int risk, ArrayList<Integer> coordinates, CallEmergency emergency, double probability, long emergencyTime) {
-		this.risk = risk;
+	public CitizenAgent(ArrayList<Integer> coordinates, CallEmergency emergency, double probability, long emergencyTime) {
 		this.coordinates = coordinates;
 		this.emergency = emergency;
 		this.probability = probability;
@@ -31,8 +29,13 @@ public class CitizenAgent extends Agent {
 	protected void setup() {
 		addBehaviour(new OneShotBehaviour(this) {
 			
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			public void action() {
-				
+				callEmergency();
 			}
 		});
 	}
@@ -43,17 +46,7 @@ public class CitizenAgent extends Agent {
 			timer.schedule(new TimerTask() {
 				
 				public void run() {
-					ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-					try {
-						msg.setContentObject(emergency);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					@SuppressWarnings("deprecation")
-					AID dest = new AID("dispatcher", AID.ISLOCALNAME);
-					msg.addReceiver(dest);
-					send(msg);
+					sendMessage("dispatcher", emergency);
 				}
 			}
 					

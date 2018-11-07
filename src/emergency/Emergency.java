@@ -27,28 +27,55 @@ public class Emergency implements Serializable{
 		return name;
 	}
 
-	public void setName(String name) {
+	/*public void setName(String name) {
 		this.name = name;
-	}
+	}*/
 
 	public int getSeverity() {
 		return severity;
 	}
 
-	public void setSeverity(int severity) {
+	/*public void setSeverity(int severity) {
 		this.severity = severity;
-	}
+	}*/
 
 	public ArrayList<EmergencyUnit> getVehicles() {
 		return vehicles;
 	}
 	
-	public void setVehicles(ArrayList<EmergencyUnit> vehicles) {
+	/*public void setVehicles(ArrayList<EmergencyUnit> vehicles) {
 		this.vehicles = vehicles;
+	}*/
+	
+	/*public void addVehicle(EmergencyUnit vehicle) {
+		this.vehicles.add(vehicle);
+	}*/
+	
+	public int getTimeDisposed() {
+		return timeDisposed*60;
 	}
 	
-	public void addVehicle(EmergencyUnit vehicle) {
-		this.vehicles.add(vehicle);
+	public double getProbabilityInjured(int timeArrival) {
+		int severityLevel;
+		if(severity > 5)
+			severityLevel = 1;
+		else
+			severityLevel = 0;
+			
+		double unscaledProbability = (double) (severity + ( ((double) timeArrival) / 15.0)*(((double) timeArrival )/ 15.0)*severityLevel);
+		return utils.Utils.cndf(unscaledProbability/5.0-1.0);
+	}
+	
+	public double getProbabilityDying(int timeArrival) {
+		int severityLevel;
+		if(severity > 5)
+			severityLevel = 1;
+		else
+			severityLevel = 0;
+		
+		double unscaledProbability = severityLevel * (severity + ( ((double) timeArrival) / 15.0)*(((double) timeArrival )/ 15.0));
+		
+		return utils.Utils.cndf(unscaledProbability/10.0-1.0);
 	}
 	
 }

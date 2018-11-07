@@ -11,7 +11,7 @@ import jade.lang.acl.UnreadableException;
 import messages.CallEmergency;
 
 
-public class DispatcherAgent extends MainAgent{
+public class DispatcherAgent extends StationAgent{
 	
 	
 	public DispatcherAgent(ArrayList<CivilProtectionAgent> civilProtectionStations) {
@@ -30,13 +30,9 @@ public class DispatcherAgent extends MainAgent{
 						CallEmergency callMsg = (CallEmergency) msg.getContentObject();
 						int stationID = getClosestStation(callMsg.getCoordinates().get(0), callMsg.getCoordinates().get(1), callMsg.getInvalidIDs());
 						if(stationID != -1) {
-							AID dest = new AID("station-"+Integer.toString(stationID), AID.ISLOCALNAME);
-							ACLMessage forwardMsg = new ACLMessage(ACLMessage.INFORM);
-							forwardMsg.setContentObject(callMsg);
-							forwardMsg.addReceiver(dest);
-							send(msg);
+							sendMessage("station-"+Integer.toString(stationID), callMsg);
 						}
-					} catch (UnreadableException | IOException e) {
+					} catch (UnreadableException e) {
 						e.printStackTrace();
 					}
 					

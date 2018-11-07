@@ -1,45 +1,25 @@
 package agents;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.io.Serializable;
 
+import jade.core.AID;
 import jade.core.Agent;
+import jade.lang.acl.ACLMessage;
+import messages.CallEmergency;
 
 public abstract class MainAgent extends Agent {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	private final ArrayList<CivilProtectionAgent> civilProtectionStations;
-	
-	
-	
-	public MainAgent(ArrayList<CivilProtectionAgent> civilProtectionStations) {
-		this.civilProtectionStations = civilProtectionStations;
-	}
-	
-	private double calculateDistance(ArrayList<Integer> coordinates1, ArrayList<Integer> coordinates2) {
-		double diffX = coordinates1.get(0) - coordinates2.get(0);
-		double diffY = coordinates1.get(1) - coordinates2.get(1);
-		return Math.sqrt(diffX*diffX+diffY*diffY);
-	}
-	
-	public int getClosestStation(int x, int y, ArrayList<Integer> invalidIDs) {
-		int min_squares = Integer.MAX_VALUE;
-		int min_index = -1;
-		for(int i=0; i < civilProtectionStations.size();i++) {
-			if(!invalidIDs.contains(civilProtectionStations.get(i).getId())) {
-				int dist_x = civilProtectionStations.get(i).getCoordinates().get(0)-x;
-				int dist_y = civilProtectionStations.get(i).getCoordinates().get(1)-y;
-				int new_squares = dist_x*dist_x+dist_y*dist_y;
-				if(new_squares < min_squares) {
-					min_index = civilProtectionStations.get(i).getId();
-				}
-			}
+	public void sendMessage(String receiver, CallEmergency callEmergency) {
+		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+		try {
+			msg.setContentObject(callEmergency);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
-		return min_index;
+		@SuppressWarnings("deprecation")
+		AID dest = new AID(receiver, AID.ISLOCALNAME);
+		msg.addReceiver(dest);
+		send(msg);
 	}
-
 }

@@ -16,9 +16,7 @@ public class EmergencyList {
 
 	private EmergencyList() {
 		emergencies = new ArrayList<Emergency>();
-		addAmbulanceEmergencies();
-		addPoliceEmergencies();
-		addFirefighterEmergencies();
+		addEmergencies();
 	}
 
 	private void addEmergencies() {
@@ -61,7 +59,7 @@ public class EmergencyList {
 		
 		
 		emergencies.add(new Emergency("Electric accident", 8,10, EmergencyUnit.FIREFIGHTER));
-		emergencies.add(new Emergency("Flooding", 9,77, EmergencyUnit.FIREFIGHTER));
+		emergencies.add(new Emergency("Flooding", 5,77, EmergencyUnit.FIREFIGHTER));
 		emergencies.add(new Emergency("Industrial explosion", 10,53, EmergencyUnit.FIREFIGHTER));//j� explodiu.. s� se houver (risco) possibilidade de explodir mais
 		emergencies.add(new Emergency("Cat stuck in tree", 1,400, EmergencyUnit.FIREFIGHTER));
 		emergencies.add(new Emergency("Domestic fire", 9,22, EmergencyUnit.FIREFIGHTER));
@@ -75,16 +73,5 @@ public class EmergencyList {
 		emergencies.add(new Emergency("Fall in a hole", 6,14, EmergencyUnit.FIREFIGHTER, EmergencyUnit.AMBULANCE));
 		emergencies.add(new Emergency("Road accident", 6,12, EmergencyUnit.FIREFIGHTER, EmergencyUnit.AMBULANCE));
 	}
-	private void addAmbulanceEmergencies() {
 	
-	}
-
-	private void addPoliceEmergencies() {
-		
-	}
-
-	private void addFirefighterEmergencies() {
-		
-	}
-
 }

@@ -33,6 +33,10 @@ public class CitizenAgent extends MainAgent {
 		this.emergencyTime = emergencyTime;
 	}
 	
+	public ArrayList<Integer> getCoordinates(){
+		return this.coordinates;
+	}
+	
 	protected void setup() {
 		addBehaviour(new OneShotBehaviour(this) {
 			

@@ -18,16 +18,32 @@ import jade.core.Runtime;
 
 public class Launcher {
 	
-	public static AgentContainer mainContainer;
+	private static AgentContainer mainContainer;
+	private static ArrayList<CivilProtectionAgent> stations;
+	private static ArrayList<CitizenAgent> citizens;
+	private static DispatcherAgent dispatcher;
+	
 	
 	public static void main(String[] args) {
-		launchJADE();
+		setUpJADE();
 		AgentsWindow.launch();
 		runModel2();
+		launchAgents();
 	}
 	
+	public static ArrayList<CivilProtectionAgent> getStations() {
+		return stations;
+	}
 	
-	private static void launchJADE() {
+	public static ArrayList<CitizenAgent> getCitizens() {
+		return citizens;
+	}
+	
+	public static DispatcherAgent getDispatcher() {
+		return dispatcher;
+	}
+	
+	private static void setUpJADE() {
 		// Get a hold on JADE runtime
 		Runtime rt = Runtime.instance();
 
@@ -45,6 +61,22 @@ public class Launcher {
 		
 	}
 	
+	
+	public static void launchAgents() {
+		try {
+			Log.log("Model running -----------");
+			for(int i=0; i < stations.size(); i++)
+				mainContainer.acceptNewAgent("station-"+Integer.toString(i+1), stations.get(i)).start();
+			for(int i=0; i < citizens.size(); i++)
+				mainContainer.acceptNewAgent("citizen-"+Integer.toString(i+1), citizens.get(i)).start();
+			mainContainer.acceptNewAgent("dispatcher", dispatcher).start();
+			
+		} catch (StaleProxyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public static void runModel1() {
 		ArrayList<Integer> coordinatesc1 = new ArrayList<Integer>(Arrays.asList(5, 5));
 		ArrayList<Emergency> emergencies1 = new ArrayList<Emergency>();
@@ -59,16 +91,10 @@ public class Launcher {
 		
 		station1.setCivilProtectionStations(civilProtectionList);
 		
-		try {
-			Log.log("Model 1 running -----------");
-			mainContainer.acceptNewAgent("station-1", station1).start();
-			mainContainer.acceptNewAgent("citizen-1", citizen1).start();
-			mainContainer.acceptNewAgent("dispatcher", dispatcher).start();
-			
-		} catch (StaleProxyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Launcher.citizens = new ArrayList<CitizenAgent>(Arrays.asList(citizen1));
+		Launcher.stations = civilProtectionList;
+		Launcher.dispatcher = dispatcher;
+		
 	}
 	
 	public static void runModel2() {
@@ -100,18 +126,8 @@ public class Launcher {
 		station1.setCivilProtectionStations(civilProtectionList);
 		station2.setCivilProtectionStations(civilProtectionList);
 		
-		try {
-			Log.log("Model 1 running -----------");
-			mainContainer.acceptNewAgent("station-1", station1).start();
-			mainContainer.acceptNewAgent("citizen-1", citizen1).start();
-			mainContainer.acceptNewAgent("station-2", station2).start();
-			mainContainer.acceptNewAgent("citizen-2", citizen2).start();
-			mainContainer.acceptNewAgent("citizen-3", citizen3).start();
-			mainContainer.acceptNewAgent("dispatcher", dispatcher).start();
-			
-		} catch (StaleProxyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Launcher.citizens = new ArrayList<CitizenAgent>(Arrays.asList(citizen1, citizen2, citizen3));
+		Launcher.stations = civilProtectionList;
+		Launcher.dispatcher = dispatcher;
 	}
 }

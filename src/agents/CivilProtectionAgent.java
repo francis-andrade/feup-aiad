@@ -16,6 +16,7 @@ public class CivilProtectionAgent extends StationAgent{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private static final int speed = 10;
 	private final ArrayList<Integer> coordinates;
 	private final int id;
 	private int availableAmbulance;
@@ -145,11 +146,11 @@ public class CivilProtectionAgent extends StationAgent{
 		if(handleResources(emergencyUnits)) {
 			double currentTime = Utils.currentTime();
 			double waitingTime = currentTime-callMsg.getCallTime();
-			double arrivalTime = waitingTime+super.calculateDistance(callMsg.getCoordinates(), coordinates)/40;
+			double arrivalTime = waitingTime+super.calculateDistance(callMsg.getCoordinates(), coordinates)/speed;
 			ArrivalEmergency arrivalEmergency = new ArrivalEmergency(arrivalTime, id);
 			sendMessage("citizen-"+Integer.toString(callMsg.getCitizenID()), new ArrivalEmergency(arrivalTime, id));
 			Log.handleMessage("station-"+Integer.toString(id), arrivalEmergency, false);
-			double totalTime = callMsg.getTimeDisposed() +2*super.calculateDistance(callMsg.getCoordinates(), coordinates)/40;
+			double totalTime = callMsg.getTimeDisposed() +2*super.calculateDistance(callMsg.getCoordinates(), coordinates)/speed;
 			double unlockTime = currentTime + totalTime;
 			Pair resources = new Pair(unlockTime, emergencyUnits);
 			boolean addedResources = false;

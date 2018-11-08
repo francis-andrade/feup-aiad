@@ -101,21 +101,21 @@ public final class CallEmergency implements Serializable{
 		return emergencyUnits;
 	}
 	
-	public double getProbabilityInjured(double d) {
+	public double getProbabilityInjured(double arrivalTime) {
 		double product = 1;
 		
 		for (Emergency emer: emergencies) 
-			product *= (1 - emer.getProbabilityInjured(d));
+			product *= (1 - emer.getProbabilityInjured(arrivalTime));
 		
 		
 		return 1 - product;
 	}
 	
-	public double getProbabilityDying(double d) {
+	public double getProbabilityDying(double arrivalTime) {
 		double product = 1;
 		
 		for (Emergency emer: emergencies) 
-			product *= (1 - emer.getProbabilityDying(d));
+			product *= (1 - emer.getProbabilityDying(arrivalTime));
 		
 		
 		return 1 - product;

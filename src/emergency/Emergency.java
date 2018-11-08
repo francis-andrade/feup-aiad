@@ -55,27 +55,27 @@ public class Emergency implements Serializable{
 		return timeDisposed;
 	}
 	
-	public double getProbabilityInjured(double d) {
+	public double getProbabilityInjured(double arrivalTime) {
 		int severityLevel;
 		if(severity > 5)
 			severityLevel = 1;
 		else
 			severityLevel = 0;
 			
-		double unscaledProbability = (double) (severity + ( ((double) d) / 15.0)*(((double) d )/ 15.0)*severityLevel);
+		double unscaledProbability = (double) (severity + ( ((double) arrivalTime) / 15.0)*(((double) arrivalTime )/ 15.0)*severityLevel);
 		return utils.Utils.cndf(unscaledProbability/5.0-1.0);
 	}
 	
-	public double getProbabilityDying(double d) {
+	public double getProbabilityDying(double arrivalTime) {
 		int severityLevel;
 		if(severity > 5)
 			severityLevel = 1;
 		else
 			severityLevel = 0;
 		
-		double unscaledProbability = severityLevel * (severity + ( ((double) d) / 15.0)*(((double) d )/ 15.0));
+		double unscaledProbability = (severity + ( ((double) arrivalTime) / 15.0)*(((double) arrivalTime )/ 15.0));
 		
-		return utils.Utils.cndf(unscaledProbability/10.0-1.0);
+		return severityLevel * utils.Utils.cndf(unscaledProbability/10.0-1.0);
 	}
 	
 }

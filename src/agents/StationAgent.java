@@ -33,6 +33,7 @@ public abstract class StationAgent extends MainAgent {
 				int dist_y = civilProtectionStations.get(i).getCoordinates().get(1)-y;
 				int new_squares = dist_x*dist_x+dist_y*dist_y;
 				if(new_squares < min_squares) {
+					min_squares = new_squares;
 					min_index = civilProtectionStations.get(i).getId();
 				}
 			}

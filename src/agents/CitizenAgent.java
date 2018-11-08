@@ -19,12 +19,14 @@ public class CitizenAgent extends MainAgent {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private final ArrayList<Integer> coordinates;
 	private final CallEmergency callEmergency;
 	private final double probability;
 	private final int emergencyTime; //seconds
 	private final int id;
 	
 	public CitizenAgent(ArrayList<Integer> coordinates, ArrayList<Emergency> emergencies, double probability, int emergencyTime, int id) {
+		this.coordinates = coordinates;
 		this.id = id;
 		this.callEmergency = new CallEmergency(emergencies, coordinates, this.id);
 		this.probability = probability;

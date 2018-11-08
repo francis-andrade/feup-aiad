@@ -5,12 +5,13 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+
 import javax.swing.JButton;
-import javax.swing.BoxLayout;
-import java.awt.FlowLayout;
 import javax.swing.JToolBar;
 import javax.swing.JLabel;
 import java.awt.GridLayout;
+import java.awt.Rectangle;
 
 public class AgentsWindow {
 
@@ -43,29 +44,25 @@ public class AgentsWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
 		JPanel status = new JPanel();
-		frame.getContentPane().add(status, BorderLayout.SOUTH);
-		status.setLayout(new GridLayout(0, 1, 0, 0));
-		
 		JLabel statusLabel = new JLabel("New label");
-		status.add(statusLabel);
-		
 		AgentMap map = new AgentMap();
-		frame.getContentPane().add(map, BorderLayout.CENTER);
-		
 		JToolBar toolBar = new JToolBar();
-		toolBar.setFloatable(false);
-		frame.getContentPane().add(toolBar, BorderLayout.NORTH);
-		
 		JButton btnStart = new JButton("Start");
-		toolBar.add(btnStart);
-		
 		JButton btnStop = new JButton("Stop");
+		status.setLayout(new GridLayout(0, 1, 0, 0));
+		status.add(statusLabel);
+		toolBar.setFloatable(false);
+		toolBar.add(btnStart);
 		toolBar.add(btnStop);
+		
+		frame = new JFrame();
+		frame.setBounds(100, 100, 300, 400);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().add(status, BorderLayout.SOUTH);
+		frame.getContentPane().add(map, BorderLayout.CENTER);
+		frame.getContentPane().add(toolBar, BorderLayout.NORTH);
+		frame.pack();
 	}
 
 }

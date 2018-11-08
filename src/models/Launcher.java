@@ -21,7 +21,7 @@ public class Launcher {
 	
 	public static void main(String[] args) {
 		launchJADE();
-		runModel1();
+		runModel2();
 	}
 	
 	
@@ -77,7 +77,7 @@ public class Launcher {
 		
 		ArrayList<Integer> coordinatesc2 = new ArrayList<Integer>(Arrays.asList(2, 2));
 		ArrayList<Emergency> emergencies2 = new ArrayList<Emergency>();
-		emergencies2.add(EmergencyList.getEmergencies().get(20));
+		emergencies2.add(EmergencyList.getEmergencies().get(15));
 		CitizenAgent citizen2 = new CitizenAgent(coordinatesc2, emergencies2, 1, 4, 2);
 		
 		ArrayList<Integer> coordinatesc3 = new ArrayList<Integer>(Arrays.asList(3, 3));
@@ -92,15 +92,19 @@ public class Launcher {
 		CivilProtectionAgent station2 = new CivilProtectionAgent(coordinatess2, 2, 2, 2, 2);
 		
 		
-		ArrayList<CivilProtectionAgent> civilProtectionList = new ArrayList<CivilProtectionAgent>(Arrays.asList(station1));
+		ArrayList<CivilProtectionAgent> civilProtectionList = new ArrayList<CivilProtectionAgent>(Arrays.asList(station1, station2));
 		DispatcherAgent dispatcher = new DispatcherAgent(civilProtectionList);
 		
 		station1.setCivilProtectionStations(civilProtectionList);
+		station2.setCivilProtectionStations(civilProtectionList);
 		
 		try {
 			Log.log("Model 1 running -----------");
 			mainContainer.acceptNewAgent("station-1", station1).start();
 			mainContainer.acceptNewAgent("citizen-1", citizen1).start();
+			mainContainer.acceptNewAgent("station-2", station2).start();
+			mainContainer.acceptNewAgent("citizen-2", citizen2).start();
+			mainContainer.acceptNewAgent("citizen-3", citizen3).start();
 			mainContainer.acceptNewAgent("dispatcher", dispatcher).start();
 			
 		} catch (StaleProxyException e) {

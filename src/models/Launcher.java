@@ -8,6 +8,7 @@ import agents.CivilProtectionAgent;
 import agents.DispatcherAgent;
 import emergency.Emergency;
 import emergency.EmergencyList;
+import gui.AgentsWindow;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.wrapper.AgentContainer;
@@ -21,6 +22,7 @@ public class Launcher {
 	
 	public static void main(String[] args) {
 		launchJADE();
+		AgentsWindow.launch();
 		runModel2();
 	}
 	

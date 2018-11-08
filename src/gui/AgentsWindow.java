@@ -12,15 +12,18 @@ import javax.swing.JToolBar;
 import javax.swing.JLabel;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class AgentsWindow {
 
 	private JFrame frame;
-
+	private JLabel statusLabel;
+	
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	public static void launch() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -45,24 +48,28 @@ public class AgentsWindow {
 	 */
 	private void initialize() {
 		JPanel status = new JPanel();
-		JLabel statusLabel = new JLabel("New label");
 		AgentMap map = new AgentMap();
-		JToolBar toolBar = new JToolBar();
-		JButton btnStart = new JButton("Start");
-		JButton btnStop = new JButton("Stop");
+		statusLabel = new JLabel("New label");
 		status.setLayout(new GridLayout(0, 1, 0, 0));
 		status.add(statusLabel);
-		toolBar.setFloatable(false);
-		toolBar.add(btnStart);
-		toolBar.add(btnStop);
 		
 		frame = new JFrame();
+		frame.setTitle("Civil protection agents");
 		frame.setBounds(100, 100, 300, 400);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(status, BorderLayout.SOUTH);
 		frame.getContentPane().add(map, BorderLayout.CENTER);
-		frame.getContentPane().add(toolBar, BorderLayout.NORTH);
 		frame.pack();
+		
+		setStatusText("Check console for additional details.");
+	}
+	
+	public void setStatusText(String text) {
+		statusLabel.setText(text);
+	}
+	
+	public String getStatusText() {
+		return statusLabel.getText();
 	}
 
 }

@@ -15,14 +15,14 @@ public class AgentMap extends JPanel {
 
 	public AgentMap() {
 		super();
-		this.setPreferredSize(new Dimension(mapWidth * cellSize+3, mapHeight * cellSize+2));
+		this.setPreferredSize(new Dimension(mapWidth * cellSize+3, mapHeight * cellSize+3));
 	}
 	
 	@Override
 	public void paintComponent(Graphics g) {
 		for (int y = 0; y < getMapHeight(); y++) {
 			for (int x = 0; x <getMapWidth(); x++) {
-				paintCoordinate(g, x*getCellSize()+1, y*getCellSize(), Color.WHITE);
+				paintCoordinate(g, x*getCellSize()+1, y*getCellSize()+1, Color.WHITE);
 			}
 		}
 	}

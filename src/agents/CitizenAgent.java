@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import emergency.Emergency;
 import emergency.EmergencyResult;
+import gui.AgentsWindow;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
@@ -84,7 +85,7 @@ public class CitizenAgent extends MainAgent {
 								
 						}
 						
-						setEmergencyStatus(result);
+						//setEmergencyStatus(result);
 						ResultEmergency resultEmergency = new ResultEmergency(result);
 						int stationID = arrival.getStationID();
 						
@@ -95,6 +96,8 @@ public class CitizenAgent extends MainAgent {
 							e.printStackTrace();
 						}
 						sendMessage("station-"+Integer.toString(stationID), resultEmergency);
+						setEmergencyStatus(result);
+						AgentsWindow.repaintMap();
 						Log.handleMessage("citizen-"+Integer.toString(id), resultEmergency, false);
 						doDelete();
 						

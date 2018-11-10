@@ -12,6 +12,7 @@ public class AgentsWindow {
 
 	private JFrame frame;
 	private JLabel statusLabel;
+	private static AgentMap map;
 	
 	/**
 	 * Launch the application.
@@ -28,6 +29,10 @@ public class AgentsWindow {
 			}
 		});
 	}
+	
+	public AgentsWindow getInstance() {
+		return this;
+	}
 
 	/**
 	 * Create the application.
@@ -41,7 +46,7 @@ public class AgentsWindow {
 	 */
 	private void initialize() {
 		JPanel status = new JPanel();
-		AgentMap map = new AgentMap();
+		map = new AgentMap();
 		statusLabel = new JLabel("New label");
 		status.setLayout(new GridLayout(0, 1, 0, 0));
 		status.add(statusLabel);
@@ -63,6 +68,10 @@ public class AgentsWindow {
 	
 	public String getStatusText() {
 		return statusLabel.getText();
+	}
+	
+	public static void repaintMap() {
+		map.repaint();
 	}
 
 }

@@ -116,7 +116,7 @@ public class Launcher {
 		ArrayList<Integer> coordinatess1 = new ArrayList<Integer>(Arrays.asList(0, 0));
 		CivilProtectionAgent station1 = new CivilProtectionAgent(coordinatess1, 1, 2, 2, 2);
 		
-		ArrayList<Integer> coordinatess2 = new ArrayList<Integer>(Arrays.asList(20, 20));
+		ArrayList<Integer> coordinatess2 = new ArrayList<Integer>(Arrays.asList(19, 19));
 		CivilProtectionAgent station2 = new CivilProtectionAgent(coordinatess2, 2, 2, 2, 2);
 		
 		
@@ -150,7 +150,7 @@ public class Launcher {
 		ArrayList<Integer> coordinatess1 = new ArrayList<Integer>(Arrays.asList(0, 0));
 		CivilProtectionAgent station1 = new CivilProtectionAgent(coordinatess1, 1, 1, 1, 1);
 		
-		ArrayList<Integer> coordinatess2 = new ArrayList<Integer>(Arrays.asList(20, 20));
+		ArrayList<Integer> coordinatess2 = new ArrayList<Integer>(Arrays.asList(19, 19));
 		CivilProtectionAgent station2 = new CivilProtectionAgent(coordinatess2, 2, 1, 1, 1);
 		
 		

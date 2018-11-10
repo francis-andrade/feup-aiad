@@ -6,6 +6,10 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
+import agents.CitizenAgent;
+import agents.CivilProtectionAgent;
+import models.Launcher;
+
 public class AgentMap extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
@@ -22,16 +26,42 @@ public class AgentMap extends JPanel {
 	public void paintComponent(Graphics g) {
 		for (int y = 0; y < getMapHeight(); y++) {
 			for (int x = 0; x <getMapWidth(); x++) {
-				paintCoordinate(g, x*getCellSize()+1, y*getCellSize()+1, Color.WHITE);
+				paintCoordinate(g, x, y, Color.WHITE);
 			}
+		}
+		paintCitizens(g);
+		paintCivilProtection(g);
+	}
+	
+	private void paintCitizens(Graphics g) {
+		for (int i = 0; i < Launcher.getCitizens().size(); i++) {
+			CitizenAgent current = Launcher.getCitizens().get(i);
+			int x = current.getCoordinates().get(0);
+			int y = current.getCoordinates().get(1);
+			if (x < 0 || x >= mapWidth || y < 0 || y >= mapHeight) {
+				throw new IllegalArgumentException();
+			}
+			paintCoordinate(g, x, y, Color.GREEN);
 		}
 	}
 	
+	private void paintCivilProtection (Graphics g) {
+		for(int i = 0; i < Launcher.getStations().size(); i++) {
+			CivilProtectionAgent current = Launcher.getStations().get(i);
+			int x = current.getCoordinates().get(0);
+			int y = current.getCoordinates().get(1);
+			if (x < 0 || x >= mapWidth || y < 0 || y >= mapHeight) {
+				throw new IllegalArgumentException();
+			}
+			paintCoordinate(g, x, y, Color.BLUE);
+		}
+	}
+
 	public void paintCoordinate(Graphics g, int x, int y, Color color) {
 		g.setColor(color);
-		g.fillRect(x, y, getCellSize(), getCellSize());
+		g.fillRect(x*getCellSize()+1, y*getCellSize()+1, getCellSize(), getCellSize());
 		g.setColor(Color.BLACK);
-		g.drawRect(x, y, getCellSize(), getCellSize());
+		g.drawRect(x*getCellSize()+1, y*getCellSize()+1, getCellSize(), getCellSize());
 		g.setColor(Color.WHITE);
 	}
 

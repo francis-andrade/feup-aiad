@@ -24,6 +24,7 @@ public class CitizenAgent extends MainAgent {
 	private final double probability;
 	private final int emergencyTime; //seconds
 	private final int id;
+	private static EmergencyResult emergencyStatus;
 	
 	public CitizenAgent(ArrayList<Integer> coordinates, ArrayList<Emergency> emergencies, double probability, int emergencyTime, int id) {
 		this.coordinates = coordinates;
@@ -31,6 +32,7 @@ public class CitizenAgent extends MainAgent {
 		this.callEmergency = new CallEmergency(emergencies, coordinates, this.id);
 		this.probability = probability;
 		this.emergencyTime = emergencyTime;
+		this.setEmergencyStatus(EmergencyResult.WAITING);
 	}
 	
 	public ArrayList<Integer> getCoordinates(){
@@ -75,13 +77,14 @@ public class CitizenAgent extends MainAgent {
 						else {
 							double probInjured = callEmergency.getProbabilityInjured(arrival.getArrivalTime());
 							double randomInjured = Math.random();
-							if(randomInjured < probInjured)
+							if(randomInjured < probInjured) 
 								result = EmergencyResult.INJURED;
 							else
 								result = EmergencyResult.FINE;
 								
 						}
 						
+						setEmergencyStatus(result);
 						ResultEmergency resultEmergency = new ResultEmergency(result);
 						int stationID = arrival.getStationID();
 						
@@ -123,6 +126,14 @@ public class CitizenAgent extends MainAgent {
 			
 			Log.handleMessage("citizen-"+Integer.toString(id), callEmergency, false);
 		}
+	}
+
+	public EmergencyResult getEmergencyStatus() {
+		return emergencyStatus;
+	}
+
+	public void setEmergencyStatus(EmergencyResult emergencyStatus) {
+		this.emergencyStatus = emergencyStatus;
 	}
 	
 	

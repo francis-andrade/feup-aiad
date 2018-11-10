@@ -25,7 +25,7 @@ public class CitizenAgent extends MainAgent {
 	private final double probability;
 	private final int emergencyTime; //seconds
 	private final int id;
-	private static EmergencyResult emergencyStatus;
+	private EmergencyResult emergencyStatus;
 	
 	public CitizenAgent(ArrayList<Integer> coordinates, ArrayList<Emergency> emergencies, double probability, int emergencyTime, int id) {
 		this.coordinates = coordinates;

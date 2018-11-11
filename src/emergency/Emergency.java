@@ -56,18 +56,18 @@ public class Emergency implements Serializable{
 	}
 	
 	public double getProbabilityInjured(double arrivalTime) {
-		int severityLevel;
+		int severityLevel; // 1 if severity larger than 5, 0 otherwise
 		if(severity > 5)
 			severityLevel = 1;
 		else
 			severityLevel = 0;
 			
 		double unscaledProbability = (double) (severity + ( ((double) arrivalTime) / 15.0)*(((double) arrivalTime )/ 15.0)*severityLevel);
-		return utils.Utils.cndf(unscaledProbability/5.0-1.0);
+		return utils.Utils.cndf(unscaledProbability/5.0-1.0); //cndf is a function that calculates the distribution normal form
 	}
 	
 	public double getProbabilityDying(double arrivalTime) {
-		int severityLevel;
+		int severityLevel; // 1 if severity larger than 5, 0 otherwise
 		if(severity > 5)
 			severityLevel = 1;
 		else
@@ -75,7 +75,7 @@ public class Emergency implements Serializable{
 		
 		double unscaledProbability = (severity + ( ((double) arrivalTime) / 15.0)*(((double) arrivalTime )/ 15.0));
 		
-		return severityLevel * utils.Utils.cndf(unscaledProbability/10.0-1.0);
+		return severityLevel * utils.Utils.cndf(unscaledProbability/10.0-1.0); //cndf is a function that calculates the distribution normal form
 	}
 	
 }

@@ -51,9 +51,9 @@ public class CivilProtectionAgent extends StationAgent{
 		totalAmbulance = available[0];
 		totalFirefighter = available[1];
 		totalPolice = available[2];
-		availableAmbulance = available[0];
-		availableFirefighter = available[1];
-		availablePolice = available[2];
+		setAvailableAmbulance(available[0]);
+		setAvailableFirefighter(available[1]);
+		setAvailablePolice(available[2]);
 		unlockResources = new ArrayList<Pair>();
 		waitingEmergencies = new ArrayList<CallEmergency>();
 		if(useReinforcementLearning)
@@ -148,11 +148,11 @@ public class CivilProtectionAgent extends StationAgent{
 	
 	
 	private boolean hasResources(boolean[] emergencyUnits) {
-		if(emergencyUnits[0] && availableAmbulance == 0)
+		if(emergencyUnits[0] && getAvailableAmbulance() == 0)
 			return false;
-		else if(emergencyUnits[1] && availableFirefighter == 0)
+		else if(emergencyUnits[1] && getAvailableFirefighter() == 0)
 			return false;
-		else if(emergencyUnits[2] && availablePolice == 0)
+		else if(emergencyUnits[2] && getAvailablePolice() == 0)
 			return false;
 		else
 			return true;
@@ -166,22 +166,22 @@ public class CivilProtectionAgent extends StationAgent{
 			return -1;
 		
 		if(emergencyUnits[0])
-			availableAmbulance --;
+			setAvailableAmbulance(getAvailableAmbulance() - 1);
 		if(emergencyUnits[1])
-			availableFirefighter --;
+			setAvailableFirefighter(getAvailableFirefighter() - 1);
 		if(emergencyUnits[2])
-			availablePolice--;
+			setAvailablePolice(getAvailablePolice() - 1);
 		
 		return 1;
 	}
 	
 	private void addResources(boolean[] emergencyUnits) {
 		if(emergencyUnits[0])
-			availableAmbulance++;
+			setAvailableAmbulance(getAvailableAmbulance() + 1);
 		if(emergencyUnits[1])
-			availableFirefighter++;
+			setAvailableFirefighter(getAvailableFirefighter() + 1);
 		if(emergencyUnits[2])
-			availablePolice++;
+			setAvailablePolice(getAvailablePolice() + 1);
 	}
 	
 	private int handleEmergency(CallEmergency callMsg) {
@@ -273,7 +273,7 @@ public class CivilProtectionAgent extends StationAgent{
 		if(useReinforcementLearning == false)
 			return true;
 		else { 
-			State state = new State(availableAmbulance, availableFirefighter, availablePolice);
+			State state = new State(getAvailableAmbulance(), getAvailableFirefighter(), getAvailablePolice());
 			boolean[] emergencyUnits = new boolean[3];
 			emergencyUnits[0]=false;
 			emergencyUnits[1]=false;
@@ -358,6 +358,30 @@ public class CivilProtectionAgent extends StationAgent{
 			else 
 				return true;
 		}
+	}
+
+	public int getAvailableAmbulance() {
+		return availableAmbulance;
+	}
+
+	public void setAvailableAmbulance(int availableAmbulance) {
+		this.availableAmbulance = availableAmbulance;
+	}
+
+	public int getAvailableFirefighter() {
+		return availableFirefighter;
+	}
+
+	public void setAvailableFirefighter(int availableFirefighter) {
+		this.availableFirefighter = availableFirefighter;
+	}
+
+	public int getAvailablePolice() {
+		return availablePolice;
+	}
+
+	public void setAvailablePolice(int availablePolice) {
+		this.availablePolice = availablePolice;
 	}
 		
 }

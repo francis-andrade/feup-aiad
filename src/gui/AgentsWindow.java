@@ -59,6 +59,7 @@ public class AgentsWindow {
 		status.add(statusLabel);
 		agentDesc = new JTextPane();
 		agentDesc.setEditable(false);
+		agentDesc.setContentType("text/html");
 		frame = new JFrame();
 		frame.setTitle("Civil protection agents");
 		frame.setBounds(100, 100, 300, 400);
@@ -73,30 +74,34 @@ public class AgentsWindow {
 	}
 	
 	private void getAgents() {
-		String res = "Legend:\n  Squares: Agents\n"
-				+ "    - Green: FINE\n"
-				+ "    - Yellow: WAITING\n"
-				+ "    - Red: INJURED\n"
-				+ "    - Black: DEAD\n"
-				+ "    - Blue: Civil protection center\n"
-				+ "  Circles: Emergency Units\n"
-				+ "    - White: Ambulance\n"
-				+ "    - Blue: Police\n"
-				+ "    - Red: Firefighter\n\n"
-				+ "Current agents:\n  Civil protection agents\n";
+		String res = "Legend:<br>  Squares: Agents<br>"
+				+ "    - <span color='green'>⬛</span> Citizen (FINE)<br>"
+				+ "    - <span color='yellow'>⬛</span> Citizen (WAITING)<br>"
+				+ "    - <span color='red'>⬛</span> Citizen (INJURED)<br>"
+				+ "    - ⬛ Citizen (DEAD)<br>"
+				+ "    - <span color='blue'>⬛</span> Civil protection center<br>"
+				+ "  Circles: Emergency Units<br>"
+				+ "    - ◌ Ambulance<br>"
+				+ "    - <span color='blue'>⏺</span> Police<br>"
+				+ "    - <span color='red'>⏺</span> Firefighter<br><br>"
+				+ "Current agents:<br>  Civil protection agents<br>";
+		
 		for (int i = 0; i < Launcher.getStations().size(); i++) {
 			CivilProtectionAgent current = Launcher.getStations().get(i);
 			int x = current.getCoordinates().get(0);
 			int y = current.getCoordinates().get(1);
-			res = res + "    - Station " + current.getId() + " (" + x + ", " + y + ")\n";
+			res = res + "    - Station " + current.getId() + " (" + x + ", " + y + ")" 
+			+ "<br><small>Total ambulances: " + current.getAvailableAmbulance()
+			+ "<br>Total police: " + current.getAvailablePolice()
+			+ "<br>Total firefighters: " + current.getAvailableFirefighter() + "</small><br>";			
 		}
 		
-		res = res + "\n  Citizen agents\n";
+		res = res + "<br>  Citizen agents<br>";
 		for (int i = 0; i < Launcher.getCitizens().size(); i++) {
 			CitizenAgent current = Launcher.getCitizens().get(i);
 			int x = current.getCoordinates().get(0);
 			int y = current.getCoordinates().get(1);
-			res = res + "    - Ctiizen " + current.getId() + " (" + x + ", " + y + ")\n";
+			res = res + "    - Ctiizen " + current.getId() + " (" + x + ", " + y + ")<br>";
 		}
 		
 		setAgentDesc(res);

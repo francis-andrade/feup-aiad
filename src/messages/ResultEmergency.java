@@ -13,8 +13,14 @@ public final class ResultEmergency implements Serializable{
 	
 	private final EmergencyResult result;
 	
-	public ResultEmergency(EmergencyResult result) {
+	private final int severity;
+	
+	private final double totalTime;
+	
+	public ResultEmergency(EmergencyResult result, int severity, double totalTime) {
 		this.result = result;
+		this.severity = severity;
+		this.totalTime = totalTime;
 	}
 	
 	public EmergencyResult getResult() {
@@ -22,7 +28,15 @@ public final class ResultEmergency implements Serializable{
 	}
 	
 	public String toString() {
-		return "EmergencyResult: "+result;
+		return "EmergencyResult: "+result+"\nSeverity: "+Integer.toString(severity)+"\nTotal Time: "+Double.toString(totalTime);
+	}
+	
+	public int getSeverity() {
+		return severity;
+	}
+	
+	public double getTotalTime() {
+		return totalTime;
 	}
 
 }

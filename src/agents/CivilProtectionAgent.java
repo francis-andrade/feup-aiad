@@ -2,11 +2,16 @@ package agents;
 
 import java.util.ArrayList;
 
+import emergency.EmergencyResult;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 import messages.ArrivalEmergency;
 import messages.CallEmergency;
+import messages.ResultEmergency;
+import reinforcementlearning.Action;
+import reinforcementlearning.ActionList;
+import reinforcementlearning.State;
 import utils.Log;
 import utils.Pair;
 import utils.Utils;
@@ -19,20 +24,35 @@ public class CivilProtectionAgent extends StationAgent{
 	private static final int speed = 10;
 	private final ArrayList<Integer> coordinates;
 	private final int id;
+	private final int totalAmbulance;
+	private final int totalFirefighter;
+	private final int totalPolice;
 	private int availableAmbulance;
-	private int availablePolice;
 	private int availableFirefighter;
+	private int availablePolice;
 	private ArrayList<Pair> unlockResources;
 	private ArrayList<CallEmergency> waitingEmergencies;
+	private final static boolean useReinforcementLearning = true;
+	private final static double learningRate = 0.1;
+	private final static int learningTime=200;
+	private ArrayList<Pair> valueTable; //(State, Value)
+	private ArrayList<Pair> qTable; //((State, Action), (Value))
+	private ArrayList<Pair> qChosen; //((State, Action), (Chosen))
+	private ArrayList<Pair> qTimesTable; //((State, Action), time)
 	
 	public CivilProtectionAgent(ArrayList<Integer> coordinates,  int id,int ...available){
 		this.coordinates = coordinates;
 		this.id = id;
+		totalAmbulance = available[0];
+		totalFirefighter = available[1];
+		totalPolice = available[2];
 		availableAmbulance = available[0];
-		availablePolice = available[2];
 		availableFirefighter = available[1];
+		availablePolice = available[2];
 		unlockResources = new ArrayList<Pair>();
 		waitingEmergencies = new ArrayList<CallEmergency>();
+		if(useReinforcementLearning)
+			initializeValueTable();
 	}
 	
 	public int getId() {
@@ -65,6 +85,11 @@ public class CivilProtectionAgent extends StationAgent{
 							CallEmergency callMsg = (CallEmergency) msgObject;
 							simpleProtocol(callMsg);
 						}
+						else if(msgObject instanceof ResultEmergency) {
+							ResultEmergency resultMsg = (ResultEmergency) msgObject;
+							if(useReinforcementLearning)
+								updateTables(resultMsg);
+						}
 					} catch (UnreadableException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -96,8 +121,19 @@ public class CivilProtectionAgent extends StationAgent{
 					}
 					
 					for(int i=0; i < waitingEmergencies.size(); i++) {
-						if(handleEmergency(waitingEmergencies.get(i)))
+						int ret = handleEmergency(waitingEmergencies.get(i));
+						if(ret == 1) {
 							waitingEmergencies.remove(i);
+							i--;
+						}
+						else if(ret == -1) {
+							
+							ArrivalEmergency arrival = new ArrivalEmergency(-1, -1, -1);
+							sendMessage("citizen-"+Integer.toString(waitingEmergencies.get(i).getCitizenID()), arrival);
+							Log.handleMessage("station-"+Integer.toString(id), arrival, false);
+							waitingEmergencies.remove(i);
+							i--;
+						}
 					}
 				}
 			}
@@ -116,10 +152,12 @@ public class CivilProtectionAgent extends StationAgent{
 			return true;
 	}
 	
-	private boolean handleResources(boolean[] emergencyUnits) {
-		
+	private int handleResources(boolean[] emergencyUnits, double totalTime) {
+		Action action = new Action(emergencyUnits, totalTime);
 		if(! hasResources(emergencyUnits))
-			return false;
+			return 0;
+		else if(!dispatchResources(action))
+			return -1;
 		
 		if(emergencyUnits[0])
 			availableAmbulance --;
@@ -128,7 +166,7 @@ public class CivilProtectionAgent extends StationAgent{
 		if(emergencyUnits[2])
 			availablePolice--;
 		
-		return true;
+		return 1;
 	}
 	
 	private void addResources(boolean[] emergencyUnits) {
@@ -140,18 +178,21 @@ public class CivilProtectionAgent extends StationAgent{
 			availablePolice++;
 	}
 	
-	private boolean handleEmergency(CallEmergency callMsg) {
+	private int handleEmergency(CallEmergency callMsg) {
 		boolean[] emergencyUnits = callMsg.getEmergencyUnitsRequired();
 		
-		if(handleResources(emergencyUnits)) {
-			double currentTime = Utils.currentTime();
-			double waitingTime = currentTime-callMsg.getCallTime();
-			double arrivalTime = waitingTime+super.calculateDistance(callMsg.getCoordinates(), coordinates)/speed;
-			ArrivalEmergency arrivalEmergency = new ArrivalEmergency(arrivalTime, id);
-			sendMessage("citizen-"+Integer.toString(callMsg.getCitizenID()), new ArrivalEmergency(arrivalTime, id));
+		double currentTime = Utils.currentTime();
+		double waitingTime = currentTime-callMsg.getCallTime();
+		double arrivalTime = waitingTime+super.calculateDistance(callMsg.getCoordinates(), coordinates)/speed;
+		double totalTime = arrivalTime + callMsg.getTimeDisposed()+ super.calculateDistance(callMsg.getCoordinates(), coordinates)/speed;
+		
+		int ret = handleResources(emergencyUnits, totalTime);
+		if(ret==1) {
+			ArrivalEmergency arrivalEmergency = new ArrivalEmergency(arrivalTime, id, totalTime);
+			sendMessage("citizen-"+Integer.toString(callMsg.getCitizenID()), arrivalEmergency);
 			Log.handleMessage("station-"+Integer.toString(id), arrivalEmergency, false);
-			double totalTime = callMsg.getTimeDisposed() +2*super.calculateDistance(callMsg.getCoordinates(), coordinates)/speed;
-			double unlockTime = currentTime + totalTime;
+			double totalEmergencyTime = callMsg.getTimeDisposed() +2*super.calculateDistance(callMsg.getCoordinates(), coordinates)/speed;
+			double unlockTime = currentTime + totalEmergencyTime;
 			Pair resources = new Pair(unlockTime, emergencyUnits);
 			boolean addedResources = false;
 			for(int i = unlockResources.size()-1; i >= 0 && addedResources == false; i--)
@@ -163,14 +204,15 @@ public class CivilProtectionAgent extends StationAgent{
 			if(addedResources == false)
 				unlockResources.add(0, resources);
 			
-			return true;			
+			return ret;			
 		}
-		else
-			return false;
+		return ret;
 	}
 	
+	
+	
 	private void simpleProtocol(CallEmergency callMsg) {
-		if(!handleEmergency(callMsg)) {
+		if(handleEmergency(callMsg) != 1) {
 			if(callMsg.getPassedAllStations()) {
 				waitingEmergencies.add(callMsg);
 			}
@@ -196,4 +238,98 @@ public class CivilProtectionAgent extends StationAgent{
 			}
 		}
 	}
+	
+	//Reinforcement Learning Functions
+	private boolean dispatchResources(Action action2) {
+		
+		if(useReinforcementLearning == false)
+			return true;
+		else { 
+			State state = new State(availableAmbulance, availableFirefighter, availablePolice);
+			boolean[] emergencyUnits = new boolean[3];
+			emergencyUnits[0]=false;
+			emergencyUnits[1]=false;
+			emergencyUnits[2]=false;
+			Action action1 = new Action(emergencyUnits, -1);
+			int index1 = StateActionToIndex(state, action1);
+			int actionChosen1 = (int) qChosen.get(index1).getValue();
+			double avgReward1 = (double) qTable.get(index1).getValue();
+			int index2 = StateActionToIndex(state, action2);
+			int actionChosen2 = (int) qChosen.get(index2).getValue();
+			double avgReward2 = (double) qTable.get(index2).getValue();
+			if(monteCarloChoice(avgReward1, actionChosen1, avgReward2, actionChosen2)) {
+				qChosen.get(index2).setValue((int) qChosen.get(index2).getValue()+1);
+				return true;
+			}
+			else {
+				qChosen.get(index1).setValue((int) qChosen.get(index1).getValue()+1);
+				return false;
+			}
+		}
+	}
+	
+	private void updateTables(ResultEmergency resultMsg) {
+		double currentTime = Utils.currentTime();
+		int reward = calculateReward(resultMsg);
+		int i = qTimesTable.size()-1;
+		while(i >= 0 && (currentTime - learningTime) < (double) qTimesTable.get(i).getValue()) {
+			int index = StateActionToIndex((State) ((Pair) qTimesTable.get(i).getKey()).getKey(), (Action) ((Pair) qTimesTable.get(i).getKey()).getValue());
+			qTable.get(index).setValue((1-learningRate) * ((double) qTable.get(index).getValue())+learningRate*reward);
+			i--;
+		}
+	}
+	
+	private void initializeValueTable() {
+		valueTable = new ArrayList<Pair>();
+		qTable = new ArrayList<Pair>();
+		qChosen = new ArrayList<Pair>();
+		ArrayList<Action> actionList = ActionList.getActionList();
+		for(int iAmb=0; iAmb <= totalAmbulance; iAmb++) {
+			for(int iFire=0; iFire <= totalFirefighter; iFire++) {
+				for(int iPol=0; iPol <= totalPolice; iPol++ ) {
+					valueTable.add(new Pair(new State(iAmb, iFire, iPol), 0));
+					for(Action action : actionList) {
+						qTable.add(new Pair(new Pair(new State(iAmb, iFire, iPol), action), 0.0));
+						qChosen.add(new Pair(new Pair(new State(iAmb, iFire, iPol), action), 0));
+					}
+				}
+			}
+		}
+		
+		qTimesTable = new ArrayList<Pair>();
+	}
+	
+	private int calculateReward(ResultEmergency resultEmer) {
+		if(resultEmer.getResult() == EmergencyResult.DEAD)		
+			return 0;
+		else if(resultEmer.getResult() == EmergencyResult.INJURED)
+			return resultEmer.getSeverity()*resultEmer.getSeverity()*resultEmer.getSeverity()*resultEmer.getSeverity();
+		else
+			return 3*resultEmer.getSeverity()*resultEmer.getSeverity()*resultEmer.getSeverity()*resultEmer.getSeverity();
+	}
+	
+	private int StateActionToIndex(State state, Action action) {
+		return state.getAvailableAmbulance()*(totalFirefighter+1)*(totalPolice+1)*ActionList.getActionList().size()+
+				state.getAvailableFirefighter()*(totalPolice+1)*ActionList.getActionList().size()+
+				state.getAvailablePolice()*ActionList.getActionList().size()+ActionList.ActionToIndex(action);
+	}
+	
+	private boolean monteCarloChoice(double avgReward1, int actionChosen1, double avgReward2, int actionChosen2) {
+		if(actionChosen1 == 0 && actionChosen2==0)
+			return true;
+		else if(actionChosen1 == 0)
+			return false;
+		else if(actionChosen2 == 0)
+			return true;
+		else {
+			double shift = 9*9*9*9;
+			double value1 = avgReward1*(shift+Math.log(actionChosen1));
+			double value2 = avgReward2*(shift+Math.log(actionChosen2));
+			if(value1 >= value2)
+				return false;
+			else 
+				return true;
+		}
+	}
+		
 }

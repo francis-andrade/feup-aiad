@@ -52,7 +52,7 @@ public class Launcher {
 		System.out.print("runtime created\n");
 
 		// Create a default profile
-		Profile profile = new ProfileImpl(null, 1200, null);
+		Profile profile = new ProfileImpl(null, 1203, null);
 		System.out.print("profile created\n");
 
 		System.out.println("Launching a whole in-process platform..."+profile);

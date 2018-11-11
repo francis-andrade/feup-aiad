@@ -66,7 +66,9 @@ public class CitizenAgent extends MainAgent {
 					try {
 						ArrivalEmergency arrival = (ArrivalEmergency) msg.getContentObject();
 						Log.handleMessage("citizen-"+Integer.toString(id), arrival, true);
+						
 						EmergencyResult result;
+						if(arrival.getStationID() != -1) {
 						double probDying = callEmergency.getProbabilityDying(arrival.getArrivalTime());
 						double randomDying = Math.random();
 						if(randomDying < probDying) {
@@ -81,18 +83,26 @@ public class CitizenAgent extends MainAgent {
 								result = EmergencyResult.FINE;
 								
 						}
-						
-						ResultEmergency resultEmergency = new ResultEmergency(result);
+						double totalTime = arrival.getTotalTime();
+						double totalEmergencyTime = 2*(totalTime - callEmergency.getTimeDisposed() - arrival.getArrivalTime()) + callEmergency.getTimeDisposed();
+						ResultEmergency resultEmergency = new ResultEmergency(result, callEmergency.getSeverity(), totalTime);
 						int stationID = arrival.getStationID();
 						
 						try {
-							Thread.sleep((long) (2*arrival.getArrivalTime()+callEmergency.getTimeDisposed())*1000);
+							Thread.sleep((long) (totalEmergencyTime)*1000);
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 						sendMessage("station-"+Integer.toString(stationID), resultEmergency);
 						Log.handleMessage("citizen-"+Integer.toString(id), resultEmergency, false);
+						}
+						else {
+							if(callEmergency.getSeverity() > 5)
+								result = EmergencyResult.DEAD;
+							else
+								result = EmergencyResult.INJURED;
+						}
 						doDelete();
 						
 					} catch (UnreadableException e) {

@@ -150,5 +150,16 @@ public final class CallEmergency implements Serializable{
 	
 		return returnString;
 	}
+	
+	public int getSeverity() {
+		int maxSeverity = Integer.MIN_VALUE;
+		
+		for(Emergency emer : emergencies) {
+			if(emer.getSeverity() > maxSeverity)
+				maxSeverity = emer.getSeverity();
+		}
+		
+		return maxSeverity;
+	}
 
 }

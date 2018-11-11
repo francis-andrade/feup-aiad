@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import emergency.Emergency;
 import emergency.EmergencyResult;
 import gui.AgentsWindow;
+import gui.VehicleStatus;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
@@ -13,6 +14,7 @@ import jade.lang.acl.UnreadableException;
 import messages.ArrivalEmergency;
 import messages.CallEmergency;
 import messages.ResultEmergency;
+import models.Launcher;
 import utils.Log;
 
 public class CitizenAgent extends MainAgent {
@@ -111,7 +113,7 @@ public class CitizenAgent extends MainAgent {
 								result = EmergencyResult.INJURED;
 						}
 						setEmergencyStatus(result);
-
+						sendAmbulanceHome(arrival.getVehicleID());
 						doDelete();
 						
 					} catch (UnreadableException e) {
@@ -128,6 +130,10 @@ public class CitizenAgent extends MainAgent {
 		});
 	}
 	
+	protected void sendAmbulanceHome(String id) {
+		Launcher.getVehicles().get(id).sendHome();
+	}
+
 	private void callEmergency() {
 		if(Math.random() < this.probability) {
 			System.out.println("citizen-"+Integer.toString(getId())+" started wait of "+Integer.toString((int) emergencyTime)+ " s to call emergency...");

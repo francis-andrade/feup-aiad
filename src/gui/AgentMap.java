@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Map;
 
 import javax.swing.Timer;
 import javax.swing.JPanel;
@@ -46,15 +48,20 @@ public class AgentMap extends JPanel implements ActionListener {
 	}
 
 	private void paintEmergencyVehicles(Graphics g) {
-		for (int i = 0; i < Launcher.getVehicles().size(); i++) {
-			drawEmergencyVehicle(g, Launcher.getVehicles().get(i));
+		ArrayList<String> toRemove = new ArrayList<String>();
+		
+		Launcher.getVehicles().forEach((k,v)->{
+			if(v.getStatus() == VehicleStatus.FINISHED) {
+				toRemove.add(k);
+			} else {
+				drawEmergencyVehicle(g, v);
+			}
+		});
+		
+		for (int i = 0; i < toRemove.size(); i++) {
+			Launcher.getVehicles().remove(toRemove.get(i));
 		}
-		/*
-		g.setColor(Color.BLACK);
-		g.drawOval(3 * cellSize + 1 + cellSize / 4, 3 * cellSize + 1 + cellSize / 4, cellSize / 2, cellSize / 2);
-		g.setColor(Color.CYAN);
-		g.fillOval(3 * cellSize + 1 + cellSize / 4, 3 * cellSize + 1 + cellSize / 4, cellSize / 2, cellSize / 2);
-		*/
+		
 		g.setColor(Color.WHITE);
 	}
 
@@ -62,8 +69,8 @@ public class AgentMap extends JPanel implements ActionListener {
 		g.setColor(Color.BLACK);
 		int x = v.getCurrentCoordinates().get(0);
 		int y = v.getCurrentCoordinates().get(1);
-		g.setColor(getVehicleColor(v));
 		g.drawOval(x, y, cellSize / 2, cellSize / 2);
+		g.setColor(getVehicleColor(v));
 		g.fillOval(x, y, cellSize / 2, cellSize / 2);
 	}
 
@@ -147,10 +154,7 @@ public class AgentMap extends JPanel implements ActionListener {
 	}
 
 	private void updateVehicles() {
-		for (int i = 0; i < Launcher.getVehicles().size(); i++) {
-			EmergencyVehicle current = Launcher.getVehicles().get(i);
-			current.updatePosition(currentTime);
-		}
+		Launcher.getVehicles().forEach((k,v)->v.updatePosition(currentTime));
 	}
 
 	public long getTime() {

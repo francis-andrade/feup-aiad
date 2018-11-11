@@ -3,12 +3,15 @@ package agents;
 import java.util.ArrayList;
 
 import emergency.EmergencyResult;
+import emergency.EmergencyUnit;
+import gui.EmergencyVehicle;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 import messages.ArrivalEmergency;
 import messages.CallEmergency;
 import messages.ResultEmergency;
+import models.Launcher;
 import reinforcementlearning.Action;
 import reinforcementlearning.ActionList;
 import reinforcementlearning.State;
@@ -21,7 +24,7 @@ public class CivilProtectionAgent extends StationAgent{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final int speed = 10;
+	private static final int speed = 2;
 	private final ArrayList<Integer> coordinates;
 	private final int id;
 	private final int totalAmbulance;
@@ -30,6 +33,7 @@ public class CivilProtectionAgent extends StationAgent{
 	private int availableAmbulance;
 	private int availableFirefighter;
 	private int availablePolice;
+	private int vehicleCounter;
 	private ArrayList<Pair> unlockResources;
 	private ArrayList<CallEmergency> waitingEmergencies;
 	private final static boolean useReinforcementLearning = true;
@@ -42,6 +46,7 @@ public class CivilProtectionAgent extends StationAgent{
 	
 	public CivilProtectionAgent(ArrayList<Integer> coordinates,  int id,int ...available){
 		this.coordinates = coordinates;
+		this.vehicleCounter = 0;
 		this.id = id;
 		totalAmbulance = available[0];
 		totalFirefighter = available[1];
@@ -118,6 +123,7 @@ public class CivilProtectionAgent extends StationAgent{
 					while(unlockResources.size() > 0 && currentTime > ((double) unlockResources.get(0).getKey())) {
 						addResources((boolean[]) unlockResources.get(0).getValue());
 						unlockResources.remove(0);
+						//Return Vehicless
 					}
 					
 					for(int i=0; i < waitingEmergencies.size(); i++) {
@@ -128,7 +134,7 @@ public class CivilProtectionAgent extends StationAgent{
 						}
 						else if(ret == -1) {
 							
-							ArrivalEmergency arrival = new ArrivalEmergency(-1, -1, -1);
+							ArrivalEmergency arrival = new ArrivalEmergency(-1, -1, -1, null);
 							sendMessage("citizen-"+Integer.toString(waitingEmergencies.get(i).getCitizenID()), arrival);
 							Log.handleMessage("station-"+Integer.toString(id), arrival, false);
 							waitingEmergencies.remove(i);
@@ -188,9 +194,12 @@ public class CivilProtectionAgent extends StationAgent{
 		
 		int ret = handleResources(emergencyUnits, totalTime);
 		if(ret==1) {
-			ArrivalEmergency arrivalEmergency = new ArrivalEmergency(arrivalTime, id, totalTime);
+			String name = "" + this.id + "_" + this.vehicleCounter;
+			ArrivalEmergency arrivalEmergency = new ArrivalEmergency(arrivalTime, id, totalTime, name);
 			sendMessage("citizen-"+Integer.toString(callMsg.getCitizenID()), arrivalEmergency);
 			Log.handleMessage("station-"+Integer.toString(id), arrivalEmergency, false);
+			sendEmergencyUnits(emergencyUnits, callMsg.getCoordinates(), name);
+			this.vehicleCounter++;
 			double totalEmergencyTime = callMsg.getTimeDisposed() +2*super.calculateDistance(callMsg.getCoordinates(), coordinates)/speed;
 			double unlockTime = currentTime + totalEmergencyTime;
 			Pair resources = new Pair(unlockTime, emergencyUnits);
@@ -211,6 +220,25 @@ public class CivilProtectionAgent extends StationAgent{
 	
 	
 	
+	private void sendEmergencyUnits(boolean[] emergencyUnits, ArrayList<Integer> citizenCoords, String name) {
+		int startX = this.coordinates.get(0);
+		int startY = this.coordinates.get(1);
+		int endX = citizenCoords.get(0);
+		int endY = citizenCoords.get(1);
+		if(emergencyUnits[0]) {
+			EmergencyVehicle ambulance = new EmergencyVehicle(name, startX,startY,endX,endY,EmergencyUnit.AMBULANCE,this.speed);
+			Launcher.addVehicle(name, ambulance);
+		}
+		if(emergencyUnits[1]) {
+			EmergencyVehicle firefighter = new EmergencyVehicle(name, startX,startY,endX,endY,EmergencyUnit.FIREFIGHTER,this.speed);
+			Launcher.addVehicle(name, firefighter);
+		}	
+		if(emergencyUnits[2]) {
+			EmergencyVehicle police = new EmergencyVehicle(name, startX,startY,endX,endY,EmergencyUnit.POLICE,this.speed);
+			Launcher.addVehicle(name, police);
+		}
+	}
+
 	private void simpleProtocol(CallEmergency callMsg) {
 		if(handleEmergency(callMsg) != 1) {
 			if(callMsg.getPassedAllStations()) {

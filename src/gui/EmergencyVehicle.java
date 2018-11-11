@@ -1,6 +1,7 @@
 package gui;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import emergency.EmergencyUnit;
 
@@ -11,11 +12,13 @@ public class EmergencyVehicle {
 	private EmergencyUnit type;
 	private double deltaX;				//pixels
 	private double deltaY;				//pixels
-	private final long startTime;	//milliseconds
-	private boolean stop;
+	private long startTime;	//milliseconds
+	private VehicleStatus status;
+	private String name;
 
 	//start and end coordinates are in grid coordinates
-	public EmergencyVehicle(int startX, int startY, int endX, int endY, EmergencyUnit type, int speed) {
+	public EmergencyVehicle(String name, int startX, int startY, int endX, int endY, EmergencyUnit type, int speed) {
+		this.name = name;
 		this.startTime = AgentsWindow.getTime();
 	
 		startCoordinates = new ArrayList<Integer>(2);
@@ -27,12 +30,12 @@ public class EmergencyVehicle {
 		int realEndX = endX * AgentMap.getCellSize() + 3;
 		int realEndY = endY * AgentMap.getCellSize() + 3;
 		
-		setStartCoordinates(realStartX, realStartY);
-		setEndCoordinates(realEndX, realEndY);
-		setCurrentCoordinates(realStartX, realStartY);
+		setStartCoordinates(new ArrayList<Integer>(Arrays.asList(realStartX, realStartY)));
+		setEndCoordinates(new ArrayList<Integer>(Arrays.asList(realEndX, realEndY)));
+		setCurrentCoordinates(new ArrayList<Integer>(Arrays.asList(realStartX, realStartY)));
 		
 		setSpeed(speed * AgentMap.getCellSize());	//speed in pixels
-		stop = false;
+		setStatus(VehicleStatus.GOING);
 		this.setType(type);
 	}
 
@@ -45,19 +48,16 @@ public class EmergencyVehicle {
 		deltaY = pixelsPerSecond * (distY/distance);
 	}
 
-	public void setCurrentCoordinates(int x, int y) {
-		currentCoordinates.set(0, x);
-		currentCoordinates.set(1, y);
+	public void setCurrentCoordinates(ArrayList<Integer> coords) {
+		currentCoordinates = coords;
 	}
 
-	public void setStartCoordinates(int x, int y) {
-		startCoordinates.set(0, x);
-		startCoordinates.set(1, y);
+	public void setStartCoordinates(ArrayList<Integer> coords) {
+		startCoordinates = coords;
 	}
 
-	public void setEndCoordinates(int x, int y) {
-		endCoordinates.set(0, x);
-		endCoordinates.set(1, y);
+	public void setEndCoordinates(ArrayList<Integer> coords) {
+		endCoordinates = coords;
 	}
 
 	public ArrayList<Integer> getStartCoordinates() {
@@ -98,13 +98,47 @@ public class EmergencyVehicle {
 	}
 
 	public void updatePosition(long currentTime) {
-		if (stop) return;
+		switch (getStatus()) {
+		case GOING:
+			updatePositionGoing(currentTime);
+			break;
+		case RETURNING:
+			updatePositionReturning(currentTime);
+			break;
+		default:
+			break;
+		}
+		
+	}
+
+	private void updatePositionReturning(long currentTime) {
+		long t = currentTime - startTime;
+		int x = (int) (endCoordinates.get(0) - deltaX * t / 1000);
+		int y = (int) (endCoordinates.get(1) - deltaY * t / 1000);
+		setCurrentCoordinates(new ArrayList<Integer>(Arrays.asList(x, y)));
+		if (x == startCoordinates.get(0) && y == startCoordinates.get(1))
+			setStatus(VehicleStatus.FINISHED);		
+	}
+
+	private void updatePositionGoing(long currentTime) {
 		long t = currentTime - startTime;
 		int x = (int) (startCoordinates.get(0) + deltaX * t / 1000);
 		int y = (int) (startCoordinates.get(1) + deltaY * t / 1000);
-		setCurrentCoordinates(x, y);
+		setCurrentCoordinates(new ArrayList<Integer>(Arrays.asList(x, y)));
 		if (x == endCoordinates.get(0) && y == endCoordinates.get(1))
-			stop = true;
+			setStatus(VehicleStatus.STOPPED);
+	}
+	
+	public void sendHome() {
+		setStatus(VehicleStatus.RETURNING);
+		this.startTime = AgentsWindow.getTime();
 	}
 
+	public VehicleStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(VehicleStatus status) {
+		this.status = status;
+	}
 }

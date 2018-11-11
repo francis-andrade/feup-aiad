@@ -73,7 +73,17 @@ public class AgentsWindow {
 	}
 	
 	private void getAgents() {
-		String res = "Current agents:\n  Civil protection agents\n";
+		String res = "Legend:\n  Squares: Agents\n"
+				+ "    - Green: FINE\n"
+				+ "    - Yellow: WAITING\n"
+				+ "    - Red: INJURED\n"
+				+ "    - Black: DEAD\n"
+				+ "    - Blue: Civil protection center\n"
+				+ "  Circles: Emergency Units\n"
+				+ "    - White: Ambulance\n"
+				+ "    - Blue: Police\n"
+				+ "    - Red: Firefighter\n\n"
+				+ "Current agents:\n  Civil protection agents\n";
 		for (int i = 0; i < Launcher.getStations().size(); i++) {
 			CivilProtectionAgent current = Launcher.getStations().get(i);
 			int x = current.getCoordinates().get(0);

@@ -100,8 +100,8 @@ public class EmergencyVehicle {
 	public void updatePosition(long currentTime) {
 		if (stop) return;
 		long t = currentTime - startTime;
-		int x = (int) (startCoordinates.get(0) + deltaX * t);
-		int y = (int) (startCoordinates.get(1) + deltaY * t);
+		int x = (int) (startCoordinates.get(0) + deltaX * t / 1000);
+		int y = (int) (startCoordinates.get(1) + deltaY * t / 1000);
 		setCurrentCoordinates(x, y);
 		if (x == endCoordinates.get(0) && y == endCoordinates.get(1))
 			stop = true;

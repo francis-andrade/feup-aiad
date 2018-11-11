@@ -7,12 +7,15 @@ import java.awt.GridLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 
 public class AgentsWindow {
 
 	private JFrame frame;
 	private JLabel statusLabel;
 	private static AgentMap map;
+	private JTextPane agentDesc;
 	
 	/**
 	 * Launch the application.
@@ -50,14 +53,17 @@ public class AgentsWindow {
 		statusLabel = new JLabel("New label");
 		status.setLayout(new GridLayout(0, 1, 0, 0));
 		status.add(statusLabel);
-		
+		agentDesc = new JTextPane();
+		agentDesc.setEditable(false);
 		frame = new JFrame();
 		frame.setTitle("Civil protection agents");
 		frame.setBounds(100, 100, 300, 400);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(status, BorderLayout.SOUTH);
 		frame.getContentPane().add(map, BorderLayout.CENTER);
+		frame.getContentPane().add(agentDesc, BorderLayout.EAST);
 		frame.pack();
+		
 		
 		setStatusText("Check console for additional details.");
 	}
@@ -72,6 +78,14 @@ public class AgentsWindow {
 	
 	public static void repaintMap() {
 		map.repaint();
+	}
+	
+	public void setAgentDesc(String text) {
+		agentDesc.setText(text);
+	}
+	
+	public String getAgendDesc() {
+		return agentDesc.getText();
 	}
 
 }

@@ -20,7 +20,7 @@ public class EmergencyList {
 		emergencies.add(new Emergency("Heart attack", 8,2, EmergencyUnit.AMBULANCE)); //1
 		emergencies.add(new Emergency("Panic attack and Anxiety", 4,15, EmergencyUnit.AMBULANCE)); //2
 		emergencies.add(new Emergency("Trampling", 8,12, EmergencyUnit.AMBULANCE)); //3
-		emergencies.add(new Emergency("Epileptic attack",14, 6, EmergencyUnit.AMBULANCE)); //4
+		emergencies.add(new Emergency("Epileptic attack",6, 14, EmergencyUnit.AMBULANCE)); //4
 		emergencies.add(new Emergency("Stroke", 9,1, EmergencyUnit.AMBULANCE)); //5
 		emergencies.add(new Emergency("Anaphylactic shock", 8,1, EmergencyUnit.AMBULANCE)); //6
 		emergencies.add(new Emergency("Fainting", 3,6, EmergencyUnit.AMBULANCE)); //7

@@ -30,7 +30,7 @@ public class CitizenAgent extends MainAgent {
 	public CitizenAgent(ArrayList<Integer> coordinates, ArrayList<Emergency> emergencies, double probability, int emergencyTime, int id) {
 		this.coordinates = coordinates;
 		this.id = id;
-		this.callEmergency = new CallEmergency(emergencies, coordinates, this.id);
+		this.callEmergency = new CallEmergency(emergencies, coordinates, this.getId());
 		this.probability = probability;
 		this.emergencyTime = emergencyTime;
 		this.setEmergencyStatus(EmergencyResult.WAITING);
@@ -68,7 +68,7 @@ public class CitizenAgent extends MainAgent {
 				if(msg != null) {
 					try {
 						ArrivalEmergency arrival = (ArrivalEmergency) msg.getContentObject();
-						Log.handleMessage("citizen-"+Integer.toString(id), arrival, true);
+						Log.handleMessage("citizen-"+Integer.toString(getId()), arrival, true);
 						EmergencyResult result;
 						double probDying = callEmergency.getProbabilityDying(arrival.getArrivalTime());
 						double randomDying = Math.random();
@@ -98,7 +98,7 @@ public class CitizenAgent extends MainAgent {
 						sendMessage("station-"+Integer.toString(stationID), resultEmergency);
 						setEmergencyStatus(result);
 						AgentsWindow.repaintMap();
-						Log.handleMessage("citizen-"+Integer.toString(id), resultEmergency, false);
+						Log.handleMessage("citizen-"+Integer.toString(getId()), resultEmergency, false);
 						doDelete();
 						
 					} catch (UnreadableException e) {
@@ -117,7 +117,7 @@ public class CitizenAgent extends MainAgent {
 	
 	private void callEmergency() {
 		if(Math.random() < this.probability) {
-			System.out.println("citizen-"+Integer.toString(id)+" started wait of "+Integer.toString((int) emergencyTime)+ " s to call emergency...");
+			System.out.println("citizen-"+Integer.toString(getId())+" started wait of "+Integer.toString((int) emergencyTime)+ " s to call emergency...");
 			try {
 				Thread.sleep(emergencyTime*1000);
 			} catch (InterruptedException e) {
@@ -127,7 +127,7 @@ public class CitizenAgent extends MainAgent {
 			callEmergency.setCallTime();
 			sendMessage("dispatcher", callEmergency);
 			
-			Log.handleMessage("citizen-"+Integer.toString(id), callEmergency, false);
+			Log.handleMessage("citizen-"+Integer.toString(getId()), callEmergency, false);
 		}
 	}
 
@@ -137,6 +137,10 @@ public class CitizenAgent extends MainAgent {
 
 	public void setEmergencyStatus(EmergencyResult emergencyStatus) {
 		this.emergencyStatus = emergencyStatus;
+	}
+
+	public int getId() {
+		return id;
 	}
 	
 	

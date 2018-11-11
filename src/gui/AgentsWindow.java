@@ -10,6 +10,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 
+import agents.CitizenAgent;
+import agents.CivilProtectionAgent;
+import models.Launcher;
+
 public class AgentsWindow {
 
 	private JFrame frame;
@@ -55,6 +59,8 @@ public class AgentsWindow {
 		status.add(statusLabel);
 		agentDesc = new JTextPane();
 		agentDesc.setEditable(false);
+		getAgents();
+
 		frame = new JFrame();
 		frame.setTitle("Civil protection agents");
 		frame.setBounds(100, 100, 300, 400);
@@ -64,10 +70,29 @@ public class AgentsWindow {
 		frame.getContentPane().add(agentDesc, BorderLayout.EAST);
 		frame.pack();
 		
-		
 		setStatusText("Check console for additional details.");
 	}
 	
+	private void getAgents() {
+		String res = "Current agents:\n  Civil protection agents\n";
+		for (int i = 0; i < Launcher.getStations().size(); i++) {
+			CivilProtectionAgent current = Launcher.getStations().get(i);
+			int x = current.getCoordinates().get(0);
+			int y = current.getCoordinates().get(1);
+			res = res + "    - Station " + current.getId() + " (" + x + ", " + y + ")\n";
+		}
+		
+		res = res + "\n  Citizen agents\n";
+		for (int i = 0; i < Launcher.getCitizens().size(); i++) {
+			CitizenAgent current = Launcher.getCitizens().get(i);
+			int x = current.getCoordinates().get(0);
+			int y = current.getCoordinates().get(1);
+			res = res + "    - Ctiizen " + current.getId() + " (" + x + ", " + y + ")\n";
+		}
+		
+		setAgentDesc(res);
+	}
+
 	public void setStatusText(String text) {
 		statusLabel.setText(text);
 	}

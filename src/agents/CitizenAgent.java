@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import emergency.Emergency;
 import emergency.EmergencyResult;
+import gui.AgentsWindow;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
@@ -24,13 +25,15 @@ public class CitizenAgent extends MainAgent {
 	private final double probability;
 	private final int emergencyTime; //seconds
 	private final int id;
+	private EmergencyResult emergencyStatus;
 	
 	public CitizenAgent(ArrayList<Integer> coordinates, ArrayList<Emergency> emergencies, double probability, int emergencyTime, int id) {
 		this.coordinates = coordinates;
 		this.id = id;
-		this.callEmergency = new CallEmergency(emergencies, coordinates, this.id);
+		this.callEmergency = new CallEmergency(emergencies, coordinates, this.getId());
 		this.probability = probability;
 		this.emergencyTime = emergencyTime;
+		this.setEmergencyStatus(EmergencyResult.WAITING);
 	}
 	
 	public ArrayList<Integer> getCoordinates(){
@@ -64,7 +67,7 @@ public class CitizenAgent extends MainAgent {
 				ACLMessage msg = myAgent.receive();
 				if(msg != null) {
 					try {
-						ArrivalEmergency arrival = (ArrivalEmergency) msg.getContentObject();
+						ArrivalEmergency arrival = (ArrivalEmergency) msg.getContentObject(); 
 						Log.handleMessage("citizen-"+Integer.toString(id), arrival, true);
 						
 						EmergencyResult result;
@@ -77,7 +80,7 @@ public class CitizenAgent extends MainAgent {
 						else {
 							double probInjured = callEmergency.getProbabilityInjured(arrival.getArrivalTime());
 							double randomInjured = Math.random();
-							if(randomInjured < probInjured)
+							if(randomInjured < probInjured) 
 								result = EmergencyResult.INJURED;
 							else
 								result = EmergencyResult.FINE;
@@ -86,6 +89,10 @@ public class CitizenAgent extends MainAgent {
 						double totalTime = arrival.getTotalTime();
 						double totalEmergencyTime = 2*(totalTime - callEmergency.getTimeDisposed() - arrival.getArrivalTime()) + callEmergency.getTimeDisposed();
 						ResultEmergency resultEmergency = new ResultEmergency(result, callEmergency.getSeverity(), totalTime);
+
+						
+						//setEmergencyStatus(result);
+
 						int stationID = arrival.getStationID();
 						
 						try {
@@ -103,6 +110,8 @@ public class CitizenAgent extends MainAgent {
 							else
 								result = EmergencyResult.INJURED;
 						}
+						setEmergencyStatus(result);
+
 						doDelete();
 						
 					} catch (UnreadableException e) {
@@ -121,7 +130,7 @@ public class CitizenAgent extends MainAgent {
 	
 	private void callEmergency() {
 		if(Math.random() < this.probability) {
-			System.out.println("citizen-"+Integer.toString(id)+" started wait of "+Integer.toString((int) emergencyTime)+ " s to call emergency...");
+			System.out.println("citizen-"+Integer.toString(getId())+" started wait of "+Integer.toString((int) emergencyTime)+ " s to call emergency...");
 			try {
 				Thread.sleep(emergencyTime*1000);
 			} catch (InterruptedException e) {
@@ -131,8 +140,20 @@ public class CitizenAgent extends MainAgent {
 			callEmergency.setCallTime();
 			sendMessage("dispatcher", callEmergency);
 			
-			Log.handleMessage("citizen-"+Integer.toString(id), callEmergency, false);
+			Log.handleMessage("citizen-"+Integer.toString(getId()), callEmergency, false);
 		}
+	}
+
+	public EmergencyResult getEmergencyStatus() {
+		return emergencyStatus;
+	}
+
+	public void setEmergencyStatus(EmergencyResult emergencyStatus) {
+		this.emergencyStatus = emergencyStatus;
+	}
+
+	public int getId() {
+		return id;
 	}
 	
 	

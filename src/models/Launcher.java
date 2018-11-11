@@ -9,6 +9,7 @@ import agents.DispatcherAgent;
 import emergency.Emergency;
 import emergency.EmergencyList;
 import gui.AgentsWindow;
+import gui.EmergencyVehicle;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.wrapper.AgentContainer;
@@ -22,6 +23,7 @@ public class Launcher {
 	private static ArrayList<CivilProtectionAgent> stations;
 	private static ArrayList<CitizenAgent> citizens;
 	private static DispatcherAgent dispatcher;
+	private static ArrayList<EmergencyVehicle> vehicles;
 	
 	
 	public static void main(String[] args) {
@@ -116,7 +118,7 @@ public class Launcher {
 		ArrayList<Integer> coordinatess1 = new ArrayList<Integer>(Arrays.asList(0, 0));
 		CivilProtectionAgent station1 = new CivilProtectionAgent(coordinatess1, 1, 2, 2, 2);
 		
-		ArrayList<Integer> coordinatess2 = new ArrayList<Integer>(Arrays.asList(20, 20));
+		ArrayList<Integer> coordinatess2 = new ArrayList<Integer>(Arrays.asList(19, 19));
 		CivilProtectionAgent station2 = new CivilProtectionAgent(coordinatess2, 2, 2, 2, 2);
 		
 		
@@ -150,7 +152,7 @@ public class Launcher {
 		ArrayList<Integer> coordinatess1 = new ArrayList<Integer>(Arrays.asList(0, 0));
 		CivilProtectionAgent station1 = new CivilProtectionAgent(coordinatess1, 1, 1, 1, 1);
 		
-		ArrayList<Integer> coordinatess2 = new ArrayList<Integer>(Arrays.asList(20, 20));
+		ArrayList<Integer> coordinatess2 = new ArrayList<Integer>(Arrays.asList(19, 19));
 		CivilProtectionAgent station2 = new CivilProtectionAgent(coordinatess2, 2, 1, 1, 1);
 		
 		
@@ -163,5 +165,13 @@ public class Launcher {
 		Launcher.citizens = new ArrayList<CitizenAgent>(Arrays.asList(citizen1, citizen2, citizen3));
 		Launcher.stations = civilProtectionList;
 		Launcher.dispatcher = dispatcher;
+	}
+
+	public static ArrayList<EmergencyVehicle> getVehicles() {
+		return vehicles;
+	}
+
+	public static void setVehicles(ArrayList<EmergencyVehicle> vehicles) {
+		Launcher.vehicles = vehicles;
 	}
 }

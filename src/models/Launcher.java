@@ -8,6 +8,7 @@ import agents.CivilProtectionAgent;
 import agents.DispatcherAgent;
 import emergency.Emergency;
 import emergency.EmergencyList;
+import emergency.EmergencyVehicle;
 import gui.AgentsWindow;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
@@ -22,6 +23,7 @@ public class Launcher {
 	private static ArrayList<CivilProtectionAgent> stations;
 	private static ArrayList<CitizenAgent> citizens;
 	private static DispatcherAgent dispatcher;
+	private static ArrayList<EmergencyVehicle> vehicles;
 	
 	
 	public static void main(String[] args) {
@@ -163,5 +165,13 @@ public class Launcher {
 		Launcher.citizens = new ArrayList<CitizenAgent>(Arrays.asList(citizen1, citizen2, citizen3));
 		Launcher.stations = civilProtectionList;
 		Launcher.dispatcher = dispatcher;
+	}
+
+	public static ArrayList<EmergencyVehicle> getVehicles() {
+		return vehicles;
+	}
+
+	public static void setVehicles(ArrayList<EmergencyVehicle> vehicles) {
+		Launcher.vehicles = vehicles;
 	}
 }

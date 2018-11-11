@@ -97,7 +97,7 @@ public class CitizenAgent extends MainAgent {
 						}
 						sendMessage("station-"+Integer.toString(stationID), resultEmergency);
 						setEmergencyStatus(result);
-						AgentsWindow.repaintMap();
+						//AgentsWindow.repaintMap();
 						Log.handleMessage("citizen-"+Integer.toString(getId()), resultEmergency, false);
 						doDelete();
 						

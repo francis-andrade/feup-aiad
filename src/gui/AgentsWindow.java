@@ -59,8 +59,6 @@ public class AgentsWindow {
 		status.add(statusLabel);
 		agentDesc = new JTextPane();
 		agentDesc.setEditable(false);
-		getAgents();
-
 		frame = new JFrame();
 		frame.setTitle("Civil protection agents");
 		frame.setBounds(100, 100, 300, 400);
@@ -68,9 +66,10 @@ public class AgentsWindow {
 		frame.getContentPane().add(status, BorderLayout.SOUTH);
 		frame.getContentPane().add(map, BorderLayout.CENTER);
 		frame.getContentPane().add(agentDesc, BorderLayout.EAST);
-		frame.pack();
 		
 		setStatusText("Check console for additional details.");
+		getAgents();
+		frame.pack();
 	}
 	
 	private void getAgents() {
@@ -112,5 +111,8 @@ public class AgentsWindow {
 	public String getAgendDesc() {
 		return agentDesc.getText();
 	}
-
+	
+	public static long getTime() {
+		return map.getTime();
+	}
 }

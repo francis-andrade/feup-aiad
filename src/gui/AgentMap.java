@@ -11,7 +11,6 @@ import javax.swing.JPanel;
 
 import agents.CitizenAgent;
 import agents.CivilProtectionAgent;
-import emergency.EmergencyVehicle;
 import models.Launcher;
 
 public class AgentMap extends JPanel implements ActionListener {
@@ -22,11 +21,13 @@ public class AgentMap extends JPanel implements ActionListener {
 	private final int mapHeight = 20;
 	private final static int timerInterval = 10;
 	private Timer timer;
-	private long startTime;
+	//private long startTime;
+	private long currentTime;
 
 	public AgentMap() {
 		super();
 		timer = new Timer(getTimerInterval(), this);
+		currentTime = 0;
 		this.setPreferredSize(new Dimension(mapWidth * cellSize + 3, mapHeight * cellSize + 3));
 	}
 
@@ -40,7 +41,7 @@ public class AgentMap extends JPanel implements ActionListener {
 		paintCitizens(g);
 		paintCivilProtection(g);
 		paintEmergencyVehicles(g);
-		startTime = System.currentTimeMillis();
+		//startTime = System.currentTimeMillis();
 		timer.start();
 	}
 
@@ -140,6 +141,7 @@ public class AgentMap extends JPanel implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		currentTime += timerInterval;
 		updateVehicles();
 		repaint();
 	}
@@ -147,16 +149,12 @@ public class AgentMap extends JPanel implements ActionListener {
 	private void updateVehicles() {
 		for (int i = 0; i < Launcher.getVehicles().size(); i++) {
 			EmergencyVehicle current = Launcher.getVehicles().get(i);
-			if (!current.getCurrentCoordinates().equals(current.getEndCoordinates())) {
-				int x = current.getCurrentCoordinates().get(0) + current.getDeltaX();
-				int y = current.getCurrentCoordinates().get(1) + current.getDeltaY();
-				current.setCurrentCoordinates(x, y);
-			}
+			current.updatePosition(currentTime);
 		}
 	}
 
 	public long getTime() {
-		return System.currentTimeMillis() - startTime;
+		return currentTime;
 	}
 
 	public static int getTimerInterval() {

@@ -1,44 +1,48 @@
-package emergency;
+package gui;
 
 import java.util.ArrayList;
 
-import gui.AgentMap;
-import gui.AgentsWindow;
+import emergency.EmergencyUnit;
 
 public class EmergencyVehicle {
 	private ArrayList<Integer> startCoordinates;	//pixel coordinates
 	private ArrayList<Integer> endCoordinates;		//pixel coordinates
 	private ArrayList<Integer> currentCoordinates;	//pixel coordinates
 	private EmergencyUnit type;
-	private int deltaX;				//pixels
-	private int deltaY;				//pixels
+	private double deltaX;				//pixels
+	private double deltaY;				//pixels
 	private final long startTime;	//milliseconds
+	private boolean stop;
 
 	//start and end coordinates are in grid coordinates
 	public EmergencyVehicle(int startX, int startY, int endX, int endY, EmergencyUnit type, int speed) {
+		this.startTime = AgentsWindow.getTime();
+	
 		startCoordinates = new ArrayList<Integer>(2);
 		endCoordinates = new ArrayList<Integer>(2);
 		currentCoordinates = new ArrayList<Integer>(2);
+		
 		int realStartX = startX * AgentMap.getCellSize() + 3;
 		int realStartY = startY * AgentMap.getCellSize() + 3;
 		int realEndX = endX * AgentMap.getCellSize() + 3;
 		int realEndY = endY * AgentMap.getCellSize() + 3;
+		
 		setStartCoordinates(realStartX, realStartY);
 		setEndCoordinates(realEndX, realEndY);
 		setCurrentCoordinates(realStartX, realStartY);
-		setSpeed(speed * AgentMap.getCellSize());
+		
+		setSpeed(speed * AgentMap.getCellSize());	//speed in pixels
+		stop = false;
 		this.setType(type);
-		this.startTime = AgentsWindow.getTime();
 	}
 
 	private void setSpeed(int pixelsPerSecond) {
-		int diffX = endCoordinates.get(0) - startCoordinates.get(0);
-		int diffY = endCoordinates.get(1) - startCoordinates.get(1);
-		double distance = Math.sqrt(diffX*diffX + diffY*diffY);
-		double totalTime = distance/pixelsPerSecond;
-		int nIncrements = (int) (totalTime*1000/AgentMap.getTimerInterval());
-		deltaX = diffX/nIncrements;
-		deltaY = diffY/nIncrements;
+		int distX = endCoordinates.get(0) - startCoordinates.get(0);
+		int distY = endCoordinates.get(1) - startCoordinates.get(1);
+		double distance = Math.sqrt(distX*distX + distY*distY);
+		
+		deltaX = pixelsPerSecond * (distX/distance);
+		deltaY = pixelsPerSecond * (distY/distance);
 	}
 
 	public void setCurrentCoordinates(int x, int y) {
@@ -80,17 +84,27 @@ public class EmergencyVehicle {
 		return startTime;
 	}
 
-	public int getDeltaX() {
+	public double getDeltaX() {
 		return deltaX;
 	}
 
-	public void setDeltas(int deltaX, int deltaY) {
+	public void setDeltas(double deltaX, double deltaY) {
 		this.deltaX = deltaX;
 		this.deltaY = deltaY;
 	}
 
-	public int getDeltaY() {
+	public double getDeltaY() {
 		return deltaY;
+	}
+
+	public void updatePosition(long currentTime) {
+		if (stop) return;
+		long t = currentTime - startTime;
+		int x = (int) (startCoordinates.get(0) + deltaX * t);
+		int y = (int) (startCoordinates.get(1) + deltaY * t);
+		setCurrentCoordinates(x, y);
+		if (x == endCoordinates.get(0) && y == endCoordinates.get(1))
+			stop = true;
 	}
 
 }

@@ -8,6 +8,7 @@ import agents.CivilProtectionAgent;
 import agents.DispatcherAgent;
 import emergency.Emergency;
 import emergency.EmergencyList;
+import emergency.EmergencyResult;
 import gui.AgentsWindow;
 import gui.EmergencyVehicle;
 import jade.core.Profile;
@@ -24,13 +25,25 @@ public class Launcher {
 	private static ArrayList<CitizenAgent> citizens;
 	private static DispatcherAgent dispatcher;
 	private static HashMap<String, EmergencyVehicle> vehicles;
-
+	private static int fineCitizens = 0;
+	private static int injuredCitizens = 0;
+	private static int deadCitizens = 0;
+	
 	public static void main(String[] args) {
 		vehicles = new HashMap<String, EmergencyVehicle>();
 		setUpJADE();
 		AgentsWindow.launch();
-		runModel3();
+		runModel1();
 		launchAgents();
+	
+		while((fineCitizens + injuredCitizens + deadCitizens) != citizens.size())
+			try {
+				Thread.sleep(5*1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		printStatistics();
 	}
 
 	public static ArrayList<CivilProtectionAgent> getStations() {
@@ -176,5 +189,22 @@ public class Launcher {
 
 	public static void addVehicle(String id, EmergencyVehicle vehicle) {
 		vehicles.put(id, vehicle);
+	}
+	
+	public static void incrementStatisticsCounter(EmergencyResult result) {
+		if(result == EmergencyResult.DEAD)
+			deadCitizens++;
+		else if(result == EmergencyResult.INJURED)
+			injuredCitizens++;
+		else if(result == EmergencyResult.FINE)
+			fineCitizens++;
+	}
+	
+	public static void printStatistics() {
+		System.out.println("\n-------------------------------");
+		System.out.println("Statistics----------------------");
+		System.out.println("Number of No Injured Citizens: "+Integer.toString(fineCitizens));
+		System.out.println("Number of Injured Citizens: "+Integer.toString(injuredCitizens));
+		System.out.println("Number of Dead Citizens: "+Integer.toString(deadCitizens));
 	}
 }

@@ -112,6 +112,7 @@ public class CitizenAgent extends MainAgent {
 							else
 								result = EmergencyResult.INJURED;
 						}
+						Launcher.incrementStatisticsCounter(result);
 						setEmergencyStatus(result);
 						sendAmbulanceHome(arrival.getVehicleID());
 						doDelete();

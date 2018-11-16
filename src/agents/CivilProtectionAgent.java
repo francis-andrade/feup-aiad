@@ -36,13 +36,13 @@ public class CivilProtectionAgent extends StationAgent{
 	private int vehicleCounter;
 	private ArrayList<Pair> unlockResources;
 	private ArrayList<CallEmergency> waitingEmergencies;
-	private final static boolean useReinforcementLearning = true;
+	private final static boolean useReinforcementLearning = false;
 	private final static double learningRate = 0.1;
 	private final static int learningTime=200;
 	private ArrayList<Pair> valueTable; //(State, Value)
 	private ArrayList<Pair> qTable; //((State, Action), (Value))
 	private ArrayList<Pair> qChosen; //((State, Action), (Chosen))
-	private ArrayList<Pair> qTimesTable; //((State, Action), time)
+	private ArrayList<ArrayList<Object>> qTimesTable; //((State, Action), time, Value)
 	
 	public CivilProtectionAgent(ArrayList<Integer> coordinates,  int id,int ...available){
 		this.coordinates = coordinates;
@@ -181,7 +181,7 @@ public class CivilProtectionAgent extends StationAgent{
 		if(emergencyUnits[1])
 			setAvailableFirefighter(getAvailableFirefighter() + 1);
 		if(emergencyUnits[2])
-			setAvailablePolice(getAvailablePolice() + 1);
+			setAvailablePolice(getAvailablePolice() + 1); 
 	}
 	
 	private int handleEmergency(CallEmergency callMsg) {
@@ -287,6 +287,12 @@ public class CivilProtectionAgent extends StationAgent{
 			double avgReward2 = (double) qTable.get(index2).getValue();
 			if(monteCarloChoice(avgReward1, actionChosen1, avgReward2, actionChosen2)) {
 				qChosen.get(index2).setValue((int) qChosen.get(index2).getValue()+1);
+				ArrayList<Object> newElement = new ArrayList<Object>();
+				newElement.add(new Pair(state, action2));
+				double currentTime = Utils.currentTime();
+				newElement.add(currentTime);
+				newElement.add(0);
+				qTimesTable.add(newElement);
 				return true;
 			}
 			else {
@@ -300,9 +306,13 @@ public class CivilProtectionAgent extends StationAgent{
 		double currentTime = Utils.currentTime();
 		int reward = calculateReward(resultMsg);
 		int i = qTimesTable.size()-1;
-		while(i >= 0 && (currentTime - learningTime) < (double) qTimesTable.get(i).getValue()) {
-			int index = StateActionToIndex((State) ((Pair) qTimesTable.get(i).getKey()).getKey(), (Action) ((Pair) qTimesTable.get(i).getKey()).getValue());
-			qTable.get(index).setValue((1-learningRate) * ((double) qTable.get(index).getValue())+learningRate*reward);
+		while(i >= 0 && (currentTime - learningTime) < (double) qTimesTable.get(i).get(1)) {
+			qTimesTable.get(i).set(2, (int) qTimesTable.get(i).get(2)+reward);			
+			i--;
+		}
+		while(i>= 0) {
+			int index = StateActionToIndex((State) ((Pair) qTimesTable.get(i).get(0)).getKey(), (Action) ((Pair) qTimesTable.get(i).get(0)).getValue());
+			qTable.get(index).setValue((1-learningRate) * ((double) qTable.get(index).getValue())+learningRate*(int) qTimesTable.get(i).get(2));
 			i--;
 		}
 	}
@@ -324,7 +334,7 @@ public class CivilProtectionAgent extends StationAgent{
 			}
 		}
 		
-		qTimesTable = new ArrayList<Pair>();
+		qTimesTable = new ArrayList<ArrayList<Object>>();
 	}
 	
 	private int calculateReward(ResultEmergency resultEmer) {

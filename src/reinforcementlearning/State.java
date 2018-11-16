@@ -9,7 +9,6 @@ public class State {
 		this.availableAmbulance = availableAmbulance;
 		this.availableFirefighter = availableFirefighter;
 		this.availablePolice = availablePolice;
-		
 	}
 	
 	public int getAvailableAmbulance() {

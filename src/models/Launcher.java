@@ -33,7 +33,7 @@ public class Launcher {
 		vehicles = new HashMap<String, EmergencyVehicle>();
 		setUpJADE();
 		AgentsWindow.launch();
-		runModel3();
+		runModel4();
 		launchAgents();
 	
 		while((fineCitizens + injuredCitizens + deadCitizens) != citizens.size())
@@ -67,7 +67,7 @@ public class Launcher {
 		System.out.print("runtime created\n");
 
 		// Create a default profile
-		Profile profile = new ProfileImpl(null, 1203, null);
+		Profile profile = new ProfileImpl(null, 1202, null);
 		System.out.print("profile created\n");
 
 		System.out.println("Launching a whole in-process platform..." + profile);
@@ -177,6 +177,35 @@ public class Launcher {
 		Launcher.citizens = new ArrayList<CitizenAgent>(Arrays.asList(citizen1, citizen2, citizen3));
 		Launcher.stations = civilProtectionList;
 		Launcher.dispatcher = dispatcher;
+	}
+	
+	public static void runModel4() {
+		ArrayList<Integer> coordinatesc1 = new ArrayList<Integer>(Arrays.asList(0, 0));
+		ArrayList<Emergency> emergencies1 = new ArrayList<Emergency>();
+		emergencies1.add(EmergencyList.getEmergencies().get(3));
+
+		ArrayList<Integer> coordinatesc2 = new ArrayList<Integer>(Arrays.asList(0, 0));
+		ArrayList<Emergency> emergencies2 = new ArrayList<Emergency>();
+		emergencies2.add(EmergencyList.getEmergencies().get(15));
+		Launcher.citizens = new ArrayList<CitizenAgent>();
+		for(int i = 1; i <=5; i++) {
+			Launcher.citizens.add( new CitizenAgent(coordinatesc2, emergencies2, 1, i*4, 2*i-1));
+			Launcher.citizens.add( new CitizenAgent(coordinatesc1, emergencies1, 1, i*4+2, 2*i));
+		}
+		
+		ArrayList<Integer> coordinatess1 = new ArrayList<Integer>(Arrays.asList(0, 0));
+		CivilProtectionAgent station1 = new CivilProtectionAgent(coordinatess1, 1, 1, 1, 1);
+
+		ArrayList<CivilProtectionAgent> civilProtectionList = new ArrayList<CivilProtectionAgent>(
+				Arrays.asList(station1));
+		DispatcherAgent dispatcher = new DispatcherAgent(civilProtectionList);
+
+		station1.setCivilProtectionStations(civilProtectionList);
+		
+		Launcher.stations = civilProtectionList;
+		Launcher.dispatcher = dispatcher;
+		
+
 	}
 
 	public static HashMap<String, EmergencyVehicle> getVehicles() {

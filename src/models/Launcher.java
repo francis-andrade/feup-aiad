@@ -33,7 +33,7 @@ public class Launcher {
 		vehicles = new HashMap<String, EmergencyVehicle>();
 		setUpJADE();
 		AgentsWindow.launch();
-		runModel4();
+		runModel3();
 		launchAgents();
 	
 		while((fineCitizens + injuredCitizens + deadCitizens) != citizens.size())

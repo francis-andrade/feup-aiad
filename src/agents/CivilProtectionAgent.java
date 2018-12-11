@@ -36,7 +36,7 @@ public class CivilProtectionAgent extends StationAgent{
 	private int vehicleCounter;
 	private ArrayList<Pair> unlockResources;
 	private ArrayList<CallEmergency> waitingEmergencies;
-	private final static boolean useReinforcementLearning = false;
+	private final static boolean useReinforcementLearning = true;
 	private final static double learningRate = 0.1;
 	private final static int learningTime=200;
 	private ArrayList<Pair> valueTable; //(State, Value)

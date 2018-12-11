@@ -33,7 +33,7 @@ public class Launcher {
 		vehicles = new HashMap<String, EmergencyVehicle>();
 		setUpJADE();
 		AgentsWindow.launch();
-		runModel4();
+		runModel3();
 		launchAgents();
 	
 		while((fineCitizens + injuredCitizens + deadCitizens) != citizens.size())
@@ -67,7 +67,7 @@ public class Launcher {
 		System.out.print("runtime created\n");
 
 		// Create a default profile
-		Profile profile = new ProfileImpl(null, 1202, null);
+		Profile profile = new ProfileImpl(null, 1201, null);
 		System.out.print("profile created\n");
 
 		System.out.println("Launching a whole in-process platform..." + profile);

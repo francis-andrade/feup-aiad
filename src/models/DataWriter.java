@@ -26,17 +26,18 @@ public class DataWriter {
 	}
 
 	public void createHeadings() throws IOException {
-		String str = "civilStations;avgAmbulances;avgPolice;avgFirefighter;"
-				+ "avgEmergencies;avgSeverity;savedLives;reinforcement;"
-				+ "dead;injured;emergencies";
+		String str = "civilStations,avgAmbulances,avgPolice;avgFirefighter,"
+				+ "avgEmergencies,avgSeverity,savedLives,reinforcement,"
+				+ "dead,injured,emergencies";
 		writeToFile(str);
 	}
 
 	public void writeToFile(DataSet data) throws IOException {
-		String str = data.getCivilStations() + ";" + data.getAvgAmbulances() + ";" + data.getAvgPolice() + ";"
-				+ data.getAvgFirefighter() + ";" + data.getAvgEmergenciesPerMinute() + ";" + data.getAvgSeverity() + ";"
-				+ data.getSavedLives() + ";" + data.isReinforcementLearningUsed() + ";" + data.getDead() + ";"
-				+ data.getInjured() + ";" + data.getEmergencies() + "\n";
+		String str = data.getCivilStations() + "," + data.getAvgAmbulances() + "," 
+				+ data.getAvgPolice() + "," + data.getAvgFirefighter() + "," 
+				+ data.getAvgEmergenciesPerMinute() + "," + data.getAvgSeverity() + ","
+				+ data.getSavedLives() + "," + data.isReinforcementLearningUsed() + "," 
+				+ data.getDead() + "," + data.getInjured() + "," + data.getEmergencies();
 		writeToFile(str);
 	}
 

@@ -3,6 +3,8 @@ package models;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Random;
+
 import agents.CitizenAgent;
 import agents.CivilProtectionAgent;
 import agents.DispatcherAgent;
@@ -28,7 +30,7 @@ public class Launcher {
 	private static int fineCitizens = 0;
 	private static int injuredCitizens = 0;
 	private static int deadCitizens = 0;
-	
+		
 	public static void main(String[] args) {
 		vehicles = new HashMap<String, EmergencyVehicle>();
 		setUpJADE();
@@ -88,6 +90,81 @@ public class Launcher {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public static void runRandomModel() {
+		Random r = new Random();
+		int numberOfStations = r.nextInt(8) + 1;
+		int numberOfCitizens = r.nextInt(24) + 1;
+		ArrayList<ArrayList<Integer>> coordinates = generateRandomCoordinates(r, numberOfCitizens + numberOfStations);
+		createRandomAgents(numberOfStations, numberOfCitizens, r, coordinates);
+		createDataSet();
+		//TODO escrever para ficheiro
+	}
+
+	private static DataSet createDataSet() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private static void createRandomAgents(int numberOfStations, int numberOfCitizens, Random r, ArrayList<ArrayList<Integer>> coordinates) {
+		ArrayList<CivilProtectionAgent> stations = new ArrayList<CivilProtectionAgent>();
+		ArrayList<CitizenAgent> citizens = new ArrayList<CitizenAgent>();
+		
+		for (int i = 0; i < numberOfStations; i++) {
+			CivilProtectionAgent newStation = generateStation(r, coordinates.get(i), i+1);
+			stations.add(newStation);
+		}
+		
+		for (int i = 0; i < numberOfCitizens; i++) {
+			CitizenAgent newAgent = generateCitizen(r, coordinates.get(i+numberOfStations), i+1);
+			citizens.add(newAgent);
+		}
+		
+		Launcher.stations = stations;
+		Launcher.citizens = citizens;
+		Launcher.dispatcher = new DispatcherAgent(stations);		
+	}
+
+	private static CitizenAgent generateCitizen(Random r, ArrayList<Integer> coordinates, int i) {
+		int bound = EmergencyList.getEmergencies().size();
+		Emergency emergency = EmergencyList.getEmergencies().get(r.nextInt(bound));
+		ArrayList<Emergency> emergencies = new ArrayList<Emergency>();
+		emergencies.add(emergency);
+		
+		CitizenAgent res = new CitizenAgent(coordinates, emergencies, 1, r.nextInt(5), 1);
+		
+		return res;
+	}
+
+	private static CivilProtectionAgent generateStation(Random r, ArrayList<Integer> coordinates, int i) {
+		return new CivilProtectionAgent(coordinates, i, r.nextInt(4), r.nextInt(4), r.nextInt(4));
+	}
+
+	private static ArrayList<ArrayList<Integer>> generateRandomCoordinates(Random r, int n) {
+		ArrayList<ArrayList<Integer>> res = new ArrayList<ArrayList<Integer>>();
+		for (int i = 0; i < n; i++) {
+			boolean unique = false;
+			while(!unique) {
+				unique = true;
+				ArrayList<Integer> current = generatePair(r);
+				for (int j = 0; j < res.size(); j++) {
+					if (res.get(j).equals(current))
+						unique = false;
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	private static ArrayList<Integer> generatePair(Random r){
+		ArrayList<Integer> current = new ArrayList<Integer>();
+		int x = r.nextInt(20);
+		int y = r.nextInt(20);
+		current.add(x);
+		current.add(y);
+		return current;
 	}
 
 	public static void runModel1() {

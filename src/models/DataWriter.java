@@ -37,7 +37,7 @@ public class DataWriter {
 				+ data.getAvgPolice() + "," + data.getAvgFirefighter() + "," 
 				+ data.getAvgEmergenciesPerMinute() + "," + data.getAvgSeverity() + ","
 				+ data.getSavedLives() + "," + data.isReinforcementLearningUsed() + "," 
-				+ data.getDead() + "," + data.getInjured() + "," + data.getEmergencies();
+				+ data.getDead() + "," + data.getInjured() + "," + data.getNumberOfEmergencies();
 		writeToFile(str);
 	}
 

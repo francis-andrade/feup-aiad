@@ -98,6 +98,13 @@ public class Launcher {
 		int numberOfCitizens = r.nextInt(24) + 1;
 		ArrayList<ArrayList<Integer>> coordinates = generateRandomCoordinates(r, numberOfCitizens + numberOfStations);
 		createRandomAgents(numberOfStations, numberOfCitizens, r, coordinates);
+		createDataSet();
+		//TODO escrever para ficheiro
+	}
+
+	private static DataSet createDataSet() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	private static void createRandomAgents(int numberOfStations, int numberOfCitizens, Random r, ArrayList<ArrayList<Integer>> coordinates) {

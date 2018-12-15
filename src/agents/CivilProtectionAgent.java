@@ -56,7 +56,7 @@ public class CivilProtectionAgent extends StationAgent{
 		setAvailablePolice(available[2]);
 		unlockResources = new ArrayList<Pair>();
 		waitingEmergencies = new ArrayList<CallEmergency>();
-		if(useReinforcementLearning)
+		if(isUseReinforcementlearning())
 			initializeValueTable();
 	}
 	
@@ -92,7 +92,7 @@ public class CivilProtectionAgent extends StationAgent{
 						}
 						else if(msgObject instanceof ResultEmergency) {
 							ResultEmergency resultMsg = (ResultEmergency) msgObject;
-							if(useReinforcementLearning)
+							if(isUseReinforcementlearning())
 								updateTables(resultMsg);
 						}
 					} catch (UnreadableException e) {
@@ -270,7 +270,7 @@ public class CivilProtectionAgent extends StationAgent{
 	//Reinforcement Learning Functions
 	private boolean dispatchResources(Action action2) {
 		
-		if(useReinforcementLearning == false)
+		if(isUseReinforcementlearning() == false)
 			return true;
 		else { 
 			State state = new State(getAvailableAmbulance(), getAvailableFirefighter(), getAvailablePolice());
@@ -392,6 +392,10 @@ public class CivilProtectionAgent extends StationAgent{
 
 	public void setAvailablePolice(int availablePolice) {
 		this.availablePolice = availablePolice;
+	}
+
+	public boolean isUseReinforcementlearning() {
+		return useReinforcementLearning;
 	}
 		
 }

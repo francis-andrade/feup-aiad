@@ -1,5 +1,6 @@
 package models;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import agents.DispatcherAgent;
 import emergency.Emergency;
 import emergency.EmergencyList;
 import emergency.EmergencyResult;
+import emergency.EmergencyUnit;
 import gui.AgentsWindow;
 import gui.EmergencyVehicle;
 import jade.core.Profile;
@@ -30,12 +32,17 @@ public class Launcher {
 	private static int fineCitizens = 0;
 	private static int injuredCitizens = 0;
 	private static int deadCitizens = 0;
+	private static String filename = "data.csv";
 		
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
+		DataWriter writer = new DataWriter(filename);
+		writer.createHeadings();
 		vehicles = new HashMap<String, EmergencyVehicle>();
 		setUpJADE();
+		//TODO criar loop daqui até ao fim da função (infinito, provavelmente)
+		DataSet currentData = null;
 		AgentsWindow.launch();
-		runModel3();
+		runRandomModel(currentData);
 		launchAgents();
 	
 		while((fineCitizens + injuredCitizens + deadCitizens) != citizens.size())
@@ -45,7 +52,17 @@ public class Launcher {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		
+		updateDataSet(currentData);
+		writer.writeToFile(currentData);
 		printStatistics();
+	}
+
+	private static void updateDataSet(DataSet currentData) {
+		//TODO acrescentar avgEmergenciesPerMinute e reinforcement
+		currentData.setSavedLives(fineCitizens);
+		currentData.setDead(deadCitizens);
+		currentData.setInjured(injuredCitizens);
 	}
 
 	public static ArrayList<CivilProtectionAgent> getStations() {
@@ -92,19 +109,55 @@ public class Launcher {
 		}
 	}
 	
-	public static void runRandomModel() {
+	public static void runRandomModel(DataSet data) {
 		Random r = new Random();
 		int numberOfStations = r.nextInt(8) + 1;
 		int numberOfCitizens = r.nextInt(24) + 1;
 		ArrayList<ArrayList<Integer>> coordinates = generateRandomCoordinates(r, numberOfCitizens + numberOfStations);
 		createRandomAgents(numberOfStations, numberOfCitizens, r, coordinates);
-		createDataSet();
-		//TODO escrever para ficheiro
+		data = createDataSet();
 	}
 
 	private static DataSet createDataSet() {
-		// TODO Auto-generated method stub
-		return null;
+		double avgAmbulances = getAverageVehicles(EmergencyUnit.AMBULANCE);
+		double avgPolice = getAverageVehicles(EmergencyUnit.POLICE);
+		double avgFirefighter = getAverageVehicles(EmergencyUnit.FIREFIGHTER);
+		double avgSeverity = getAverageSeverity();
+		return new DataSet(Launcher.getStations().size(), avgAmbulances, avgPolice, 
+				avgFirefighter, 1, avgSeverity, 0, Launcher.getStations().get(0).isUseReinforcementlearning(),
+				0, 0, Launcher.getCitizens().size());
+
+	}
+
+	
+	private static double getAverageSeverity() {
+		double sum = 0;
+		for (int i = 0; i < Launcher.getCitizens().size(); i++) {
+			sum += Launcher.getCitizens().get(i).getEmergencies().get(0).getSeverity();
+		}
+		return sum/Launcher.getCitizens().size();
+	}
+
+	private static double getAverageVehicles(EmergencyUnit type) {
+		double sum = 0;
+		switch(type) {
+		case AMBULANCE:
+			for (int i = 0; i < Launcher.getStations().size(); i++) {
+				sum += Launcher.getStations().get(i).getAvailableAmbulance();
+			}
+			break;
+		case POLICE:
+			for (int i = 0; i < Launcher.getStations().size(); i++) {
+				sum += Launcher.getStations().get(i).getAvailablePolice();
+			}
+			break;
+		default:
+			for (int i = 0; i < Launcher.getStations().size(); i++) {
+				sum += Launcher.getStations().get(i).getAvailableFirefighter();
+			}
+			break;
+		}
+		return sum/Launcher.getStations().size();
 	}
 
 	private static void createRandomAgents(int numberOfStations, int numberOfCitizens, Random r, ArrayList<ArrayList<Integer>> coordinates) {

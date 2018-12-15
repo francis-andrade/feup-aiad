@@ -14,11 +14,12 @@ public class DataWriter {
 		this.file = new File(filename);
 	}
 
-	public void writeToFile(String str) throws IOException {
+	public void writeToFile(String str, boolean newLine) throws IOException {
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(this.filename, true));
+			if (newLine) 
+				writer.newLine();
 			writer.write(str);
-			writer.newLine();
 			writer.close();
 		} catch (IOException e) {
 			System.out.println("Error writing to file" + this.filename);
@@ -29,7 +30,7 @@ public class DataWriter {
 		String str = "civilStations,avgAmbulances,avgPolice;avgFirefighter,"
 				+ "avgEmergencies,avgSeverity,savedLives,reinforcement,"
 				+ "dead,injured,emergencies";
-		writeToFile(str);
+		writeToFile(str, false);
 	}
 
 	public void writeToFile(DataSet data) throws IOException {
@@ -38,7 +39,7 @@ public class DataWriter {
 				+ data.getAvgEmergenciesPerMinute() + "," + data.getAvgSeverity() + ","
 				+ data.getSavedLives() + "," + data.isReinforcementLearningUsed() + "," 
 				+ data.getDead() + "," + data.getInjured() + "," + data.getNumberOfEmergencies();
-		writeToFile(str);
+		writeToFile(str, true);
 	}
 
 }

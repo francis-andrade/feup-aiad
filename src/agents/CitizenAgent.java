@@ -28,6 +28,7 @@ public class CitizenAgent extends MainAgent {
 	private final int emergencyTime; //seconds
 	private final int id;
 	private EmergencyResult emergencyStatus;
+	private ArrayList<Emergency> emergencies; 
 
 	public CitizenAgent(ArrayList<Integer> coordinates, ArrayList<Emergency> emergencies, double probability, int emergencyTime, int id) {
 		this.coordinates = coordinates;
@@ -35,6 +36,7 @@ public class CitizenAgent extends MainAgent {
 		this.callEmergency = new CallEmergency(emergencies, coordinates, this.getId());
 		this.probability = probability;
 		this.emergencyTime = emergencyTime;
+		this.setEmergencies(emergencies);
 		this.setEmergencyStatus(EmergencyResult.WAITING);
 	}
 
@@ -162,6 +164,14 @@ public class CitizenAgent extends MainAgent {
 
 	public int getId() {
 		return id;
+	}
+
+	public ArrayList<Emergency> getEmergencies() {
+		return emergencies;
+	}
+
+	public void setEmergencies(ArrayList<Emergency> emergencies) {
+		this.emergencies = emergencies;
 	}
 
 

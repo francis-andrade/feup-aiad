@@ -7,15 +7,17 @@ public class DataSet {
 	private double avgFirefighter;
 	private double avgEmergenciesPerMinute;
 	private double avgSeverity;
-	private double savedLives;
 	private boolean reinforcementLearningUsed;
+	private int numberOfEmergencies;
+	
+	private double savedLives;
 	private int dead;
 	private int injured;
-	private int emergencies;
+	
 	
 	DataSet (int civilStations, double avgAmbulances, double avgPolice, double avgFirefighter,
 			double avgEmergencies, double avgSeverity, float savedLives, boolean reinforcement,
-			int dead, int injured, int emergencies){
+			int dead, int injured, int numberOfEmergencies){
 		this.civilStations = civilStations;
 		this.avgAmbulances = avgAmbulances;
 		this.avgPolice = avgPolice;
@@ -26,7 +28,7 @@ public class DataSet {
 		this.reinforcementLearningUsed = reinforcement;
 		this.dead = dead;
 		this.injured = injured;
-		this.emergencies = emergencies;
+		this.numberOfEmergencies = numberOfEmergencies;
 	}
 	
 	
@@ -109,11 +111,11 @@ public class DataSet {
 		this.injured = injured;
 	}
 	
-	public int getEmergencies() {
-		return emergencies;
+	public int getNumberOfEmergencies() {
+		return numberOfEmergencies;
 	}
 	
-	public void setEmergencies(int emergencies) {
-		this.emergencies = emergencies;
+	public void setNumberOfEmergencies(int emergencies) {
+		this.numberOfEmergencies = emergencies;
 	}
 }

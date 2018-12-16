@@ -48,6 +48,13 @@ public class CitizenAgent extends MainAgent {
 		return this.emergencyTime;
 	}
 	
+	public EmergencyResult getDefaultResult() {
+		if(callEmergency.getSeverity() > 5)
+			return EmergencyResult.DEAD;
+		else
+			return EmergencyResult.INJURED;
+	}
+	
 	protected void setup() {
 		addBehaviour(new OneShotBehaviour(this) {
 
@@ -73,12 +80,12 @@ public class CitizenAgent extends MainAgent {
 			@Override
 			public void action() {
 				ACLMessage msg = myAgent.receive();
+				EmergencyResult result;
 				if(msg != null) {
 					try {
 						ArrivalEmergency arrival = (ArrivalEmergency) msg.getContentObject(); 
 						Log.handleMessage("citizen-"+Integer.toString(id), arrival, true);
 
-						EmergencyResult result;
 						if(arrival.getStationID() != -1) {
 							double probDying = callEmergency.getProbabilityDying(arrival.getArrivalTime());
 							double randomDying = Math.random();
@@ -114,19 +121,19 @@ public class CitizenAgent extends MainAgent {
 							Log.handleMessage("citizen-"+Integer.toString(id), resultEmergency, false);
 						}
 						else {
-							if(callEmergency.getSeverity() > 5)
-								result = EmergencyResult.DEAD;
-							else
-								result = EmergencyResult.INJURED;
+							result = getDefaultResult();
 						}
-						Launcher.incrementStatisticsCounter(result);
-						setEmergencyStatus(result);
-						doDelete();
+						
 
 					} catch (UnreadableException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						result = getDefaultResult();
 					}
+					
+					Launcher.incrementStatisticsCounter(result);
+					setEmergencyStatus(result);
+					doDelete();
 				}
 				else {
 					block();

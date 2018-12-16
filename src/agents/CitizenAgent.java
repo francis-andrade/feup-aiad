@@ -43,7 +43,11 @@ public class CitizenAgent extends MainAgent {
 	public ArrayList<Integer> getCoordinates(){
 		return this.coordinates;
 	}
-
+	
+	public int getEmergencyTime() {
+		return this.emergencyTime;
+	}
+	
 	protected void setup() {
 		addBehaviour(new OneShotBehaviour(this) {
 
@@ -135,7 +139,8 @@ public class CitizenAgent extends MainAgent {
 
 	protected void sendAmbulanceHome(String id) {
 		System.out.println("sendAmbulanceHome: "+id);
-		Launcher.getVehicles().get(id).sendHome();
+		if(Launcher.getUseGui())
+			Launcher.getVehicles().get(id).sendHome();
 	}
 
 	private void callEmergency() {

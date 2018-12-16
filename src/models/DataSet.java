@@ -10,13 +10,16 @@ public class DataSet {
 	private boolean reinforcementLearningUsed;
 	private int numberOfEmergencies;
 	
-	private double savedLives;
+	private int savedLives;
 	private int dead;
 	private int injured;
 	
+	DataSet(){
+		
+	}
 	
 	DataSet (int civilStations, double avgAmbulances, double avgPolice, double avgFirefighter,
-			double avgEmergencies, double avgSeverity, float savedLives, boolean reinforcement,
+			double avgEmergencies, double avgSeverity, int savedLives, boolean reinforcement,
 			int dead, int injured, int numberOfEmergencies){
 		this.civilStations = civilStations;
 		this.avgAmbulances = avgAmbulances;
@@ -83,7 +86,7 @@ public class DataSet {
 		return savedLives;
 	}
 	
-	public void setSavedLives(double savedLives) {
+	public void setSavedLives(int savedLives) {
 		this.savedLives = savedLives;
 	}
 	

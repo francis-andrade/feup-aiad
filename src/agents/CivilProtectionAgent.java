@@ -36,7 +36,7 @@ public class CivilProtectionAgent extends StationAgent{
 	private int vehicleCounter;
 	private ArrayList<Pair> unlockResources;
 	private ArrayList<CallEmergency> waitingEmergencies;
-	private final static boolean useReinforcementLearning = true;
+	private final static boolean useReinforcementLearning = false;
 	private final static double learningRate = 0.1;
 	private final static int learningTime=200;
 	private ArrayList<Pair> valueTable; //(State, Value)
@@ -225,6 +225,7 @@ public class CivilProtectionAgent extends StationAgent{
 		int startY = this.coordinates.get(1);
 		int endX = citizenCoords.get(0);
 		int endY = citizenCoords.get(1);
+		if(Launcher.getUseGui()) {
 		if(emergencyUnits[0]) {
 			EmergencyVehicle ambulance = new EmergencyVehicle(name, startX,startY,endX,endY,EmergencyUnit.AMBULANCE,this.speed);
 			Launcher.addVehicle(name, ambulance);
@@ -236,6 +237,7 @@ public class CivilProtectionAgent extends StationAgent{
 		if(emergencyUnits[2]) {
 			EmergencyVehicle police = new EmergencyVehicle(name, startX,startY,endX,endY,EmergencyUnit.POLICE,this.speed);
 			Launcher.addVehicle(name, police);
+		}
 		}
 	}
 

@@ -27,9 +27,9 @@ public class DataWriter {
 	}
 
 	public void createHeadings() throws IOException {
-		String str = "civilStations,avgAmbulances,avgPolice;avgFirefighter,"
-				+ "avgEmergencies,avgSeverity,savedLives,reinforcement,"
-				+ "dead,injured,emergencies";
+		String str = "civilStations,avgAmbulances,avgPolice,avgFirefighter,"
+				+ "avgEmergencies,avgSeverity,savedLives,"
+				+ "dead,injured";
 		writeToFile(str, false);
 	}
 
@@ -37,8 +37,7 @@ public class DataWriter {
 		String str = data.getCivilStations() + "," + data.getAvgAmbulances() + "," 
 				+ data.getAvgPolice() + "," + data.getAvgFirefighter() + "," 
 				+ data.getAvgEmergenciesPerMinute() + "," + data.getAvgSeverity() + ","
-				+ data.getSavedLives() + "," + data.isReinforcementLearningUsed() + "," 
-				+ data.getDead() + "," + data.getInjured() + "," + data.getNumberOfEmergencies();
+				+ data.getSavedLives() + "," + data.getDead() + "," + data.getInjured() ;
 		writeToFile(str, true);
 	}
 

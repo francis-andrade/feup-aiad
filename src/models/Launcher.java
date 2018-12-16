@@ -29,19 +29,32 @@ public class Launcher {
 	private static ArrayList<CitizenAgent> citizens;
 	private static DispatcherAgent dispatcher;
 	private static HashMap<String, EmergencyVehicle> vehicles;
-	private static int fineCitizens = 0;
-	private static int injuredCitizens = 0;
-	private static int deadCitizens = 0;
-	private static String filename = "data.csv";
+	private volatile static int fineCitizens = 0;
+	private volatile static int injuredCitizens = 0;
+	private volatile static int deadCitizens = 0;
+	private final static String filename = "data.csv";
+	private final static boolean useGui = false; 
+	private static DataWriter writer; 
 		
 	public static void main(String[] args) throws IOException {
-		DataWriter writer = new DataWriter(filename);
-		writer.createHeadings();
+		writer = new DataWriter(filename);
+		//writer.createHeadings();
 		vehicles = new HashMap<String, EmergencyVehicle>();
 		setUpJADE();
-		//TODO criar loop daqui até ao fim da função (infinito, provavelmente)
-		DataSet currentData = null;
-		AgentsWindow.launch();
+		
+		final int noIter = 200;
+		
+		for(int i = 0; i < noIter; i++)
+			runModel();
+	}
+	
+	private static void runModel() {
+		vehicles = new HashMap<String, EmergencyVehicle>();
+		setUpJADE();
+		
+		DataSet currentData = new DataSet();
+		if(useGui)
+			AgentsWindow.launch();
 		runRandomModel(currentData);
 		launchAgents();
 	
@@ -54,12 +67,25 @@ public class Launcher {
 			}
 		
 		updateDataSet(currentData);
-		writer.writeToFile(currentData);
+		try {
+			writer.writeToFile(currentData);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		printStatistics();
+		
+		try {
+			mainContainer.kill();
+		} catch (StaleProxyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private static void updateDataSet(DataSet currentData) {
-		//TODO acrescentar avgEmergenciesPerMinute e reinforcement
+		System.out.println(currentData);
+		System.out.println(fineCitizens);
 		currentData.setSavedLives(fineCitizens);
 		currentData.setDead(deadCitizens);
 		currentData.setInjured(injuredCitizens);
@@ -76,6 +102,10 @@ public class Launcher {
 	public static DispatcherAgent getDispatcher() {
 		return dispatcher;
 	}
+	
+	public static boolean getUseGui() {
+		return useGui;
+	}
 
 	private static void setUpJADE() {
 		// Get a hold on JADE runtime
@@ -86,7 +116,7 @@ public class Launcher {
 		System.out.print("runtime created\n");
 
 		// Create a default profile
-		Profile profile = new ProfileImpl(null, 1201, null);
+		Profile profile = new ProfileImpl(null, 1200, null);
 		System.out.print("profile created\n");
 
 		System.out.println("Launching a whole in-process platform..." + profile);
@@ -110,23 +140,43 @@ public class Launcher {
 	}
 	
 	public static void runRandomModel(DataSet data) {
+		Launcher.citizens = new ArrayList<CitizenAgent>();
+		Launcher.stations = new ArrayList<CivilProtectionAgent>();
 		Random r = new Random();
 		int numberOfStations = r.nextInt(8) + 1;
-		int numberOfCitizens = r.nextInt(24) + 1;
+		int numberOfCitizens = r.nextInt(9) + 1;
+		//int numberOfCitizens = 10;
 		ArrayList<ArrayList<Integer>> coordinates = generateRandomCoordinates(r, numberOfCitizens + numberOfStations);
 		createRandomAgents(numberOfStations, numberOfCitizens, r, coordinates);
-		data = createDataSet();
+		createDataSet(data);
 	}
 
-	private static DataSet createDataSet() {
+	private static void createDataSet(DataSet data) {
 		double avgAmbulances = getAverageVehicles(EmergencyUnit.AMBULANCE);
 		double avgPolice = getAverageVehicles(EmergencyUnit.POLICE);
 		double avgFirefighter = getAverageVehicles(EmergencyUnit.FIREFIGHTER);
 		double avgSeverity = getAverageSeverity();
-		return new DataSet(Launcher.getStations().size(), avgAmbulances, avgPolice, 
-				avgFirefighter, 1, avgSeverity, 0, Launcher.getStations().get(0).isUseReinforcementlearning(),
-				0, 0, Launcher.getCitizens().size());
+		double maxWaitTime = getMaxWaitTime();
+		double avgEmergencies = Launcher.citizens.size()/maxWaitTime;
+		
+		data.setCivilStations(Launcher.stations.size());
+		data.setAvgAmbulances(avgAmbulances);
+		data.setAvgPolice(avgPolice);
+		data.setAvgFirefighter(avgFirefighter);
+		data.setAvgSeverity(avgSeverity);
+		data.setAvgEmergenciesPerMinute(avgEmergencies);
 
+
+	}
+	
+	private static int getMaxWaitTime() {
+		int maxWaitTime = 0;
+		for(int i=0; i < Launcher.citizens.size(); i++) {
+			if(Launcher.citizens.get(i).getEmergencyTime() > maxWaitTime)
+				maxWaitTime = Launcher.citizens.get(i).getEmergencyTime();
+		}
+		
+		return maxWaitTime;
 	}
 
 	
@@ -161,54 +211,47 @@ public class Launcher {
 	}
 
 	private static void createRandomAgents(int numberOfStations, int numberOfCitizens, Random r, ArrayList<ArrayList<Integer>> coordinates) {
-		ArrayList<CivilProtectionAgent> stations = new ArrayList<CivilProtectionAgent>();
-		ArrayList<CitizenAgent> citizens = new ArrayList<CitizenAgent>();
-		
+				
 		for (int i = 0; i < numberOfStations; i++) {
-			CivilProtectionAgent newStation = generateStation(r, coordinates.get(i), i+1);
-			stations.add(newStation);
+			CivilProtectionAgent newStation = generateStation(r, coordinates.get(i));
+			Launcher.stations.add(newStation);
 		}
 		
 		for (int i = 0; i < numberOfCitizens; i++) {
-			CitizenAgent newAgent = generateCitizen(r, coordinates.get(i+numberOfStations), i+1);
-			citizens.add(newAgent);
+			CitizenAgent newAgent = generateCitizen(r, coordinates.get(i+numberOfStations));
+			Launcher.citizens.add(newAgent);
 		}
 		
-		Launcher.stations = stations;
-		Launcher.citizens = citizens;
-		Launcher.dispatcher = new DispatcherAgent(stations);		
+		Launcher.dispatcher = new DispatcherAgent(Launcher.stations);	
+		
+		for(int i = 0; i < Launcher.stations.size(); i++) {
+			Launcher.stations.get(i).setCivilProtectionStations(Launcher.stations);
+		}
 	}
 
-	private static CitizenAgent generateCitizen(Random r, ArrayList<Integer> coordinates, int i) {
+	private static CitizenAgent generateCitizen(Random r, ArrayList<Integer> coordinates) {
 		int bound = EmergencyList.getEmergencies().size();
 		Emergency emergency = EmergencyList.getEmergencies().get(r.nextInt(bound));
 		ArrayList<Emergency> emergencies = new ArrayList<Emergency>();
 		emergencies.add(emergency);
 		
-		CitizenAgent res = new CitizenAgent(coordinates, emergencies, 1, r.nextInt(5), 1);
+		CitizenAgent res = new CitizenAgent(coordinates, emergencies, 1, r.nextInt(5), Launcher.citizens.size() + 1);
 		
 		return res;
 	}
 
-	private static CivilProtectionAgent generateStation(Random r, ArrayList<Integer> coordinates, int i) {
-		return new CivilProtectionAgent(coordinates, i, r.nextInt(4), r.nextInt(4), r.nextInt(4));
+	private static CivilProtectionAgent generateStation(Random r, ArrayList<Integer> coordinates) {
+		return new CivilProtectionAgent(coordinates, Launcher.stations.size()+1, r.nextInt(4)+1, r.nextInt(4)+1, r.nextInt(4)+1);
 	}
 
 	private static ArrayList<ArrayList<Integer>> generateRandomCoordinates(Random r, int n) {
 		ArrayList<ArrayList<Integer>> res = new ArrayList<ArrayList<Integer>>();
 		for (int i = 0; i < n; i++) {
-			boolean unique = false;
-			while(!unique) {
-				unique = true;
-				ArrayList<Integer> current = generatePair(r);
-				for (int j = 0; j < res.size(); j++) {
-					if (res.get(j).equals(current))
-						unique = false;
-				}
-			}
+			ArrayList<Integer> current = generatePair(r);
+			res.add(current);	
 		}
 		
-		return null;
+		return res;
 	}
 	
 	private static ArrayList<Integer> generatePair(Random r){
@@ -347,7 +390,8 @@ public class Launcher {
 	}
 
 	public static void addVehicle(String id, EmergencyVehicle vehicle) {
-		vehicles.put(id, vehicle);
+		if(useGui)
+			vehicles.put(id, vehicle);
 	}
 	
 	public static void incrementStatisticsCounter(EmergencyResult result) {

@@ -104,7 +104,7 @@ public class CitizenAgent extends MainAgent {
 							int stationID = arrival.getStationID();
 
 							try {
-								Thread.sleep((long) (totalEmergencyTime)*1000);
+								Thread.sleep((long) ((long) (totalEmergencyTime)*1000/Launcher.getTimeDivider()));
 							} catch (InterruptedException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -147,7 +147,7 @@ public class CitizenAgent extends MainAgent {
 		if(Math.random() < this.probability) {
 			System.out.println("citizen-"+Integer.toString(getId())+" started wait of "+Integer.toString((int) emergencyTime)+ " s to call emergency...");
 			try {
-				Thread.sleep(emergencyTime*1000);
+				Thread.sleep((long) (emergencyTime*1000/Launcher.getTimeDivider()));
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -188,7 +188,7 @@ public class CivilProtectionAgent extends StationAgent{
 		boolean[] emergencyUnits = callMsg.getEmergencyUnitsRequired();
 		
 		double currentTime = Utils.currentTime();
-		double waitingTime = currentTime-callMsg.getCallTime();
+		double waitingTime = (currentTime-callMsg.getCallTime())*Launcher.getTimeDivider();
 		double arrivalTime = waitingTime+super.calculateDistance(callMsg.getCoordinates(), coordinates)/speed;
 		double totalTime = arrivalTime + callMsg.getTimeDisposed()+ super.calculateDistance(callMsg.getCoordinates(), coordinates)/speed;
 		

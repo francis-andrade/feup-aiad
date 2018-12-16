@@ -35,6 +35,7 @@ public class Launcher {
 	private final static String filename = "data.csv";
 	private final static boolean useGui = false; 
 	private static DataWriter writer; 
+	private final static double timeDivider = 100;
 		
 	public static void main(String[] args) throws IOException {
 		writer = new DataWriter(filename);
@@ -81,6 +82,14 @@ public class Launcher {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		resetStatistics();
+	}
+	
+	private static void resetStatistics() {
+		fineCitizens = 0;
+		injuredCitizens = 0;
+		deadCitizens = 0;
 	}
 
 	private static void updateDataSet(DataSet currentData) {
@@ -105,6 +114,10 @@ public class Launcher {
 	
 	public static boolean getUseGui() {
 		return useGui;
+	}
+	
+	public static double getTimeDivider() {
+		return timeDivider;
 	}
 
 	private static void setUpJADE() {

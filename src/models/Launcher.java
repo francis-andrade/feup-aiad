@@ -43,7 +43,7 @@ public class Launcher {
 		vehicles = new HashMap<String, EmergencyVehicle>();
 		setUpJADE();
 		
-		final int noIter = 200;
+		final int noIter = 2000;
 		
 		for(int i = 0; i < noIter; i++)
 			runModel();
@@ -170,7 +170,7 @@ public class Launcher {
 		double avgFirefighter = getAverageVehicles(EmergencyUnit.FIREFIGHTER);
 		double avgSeverity = getAverageSeverity();
 		double maxWaitTime = getMaxWaitTime();
-		double avgEmergencies = Launcher.citizens.size()/maxWaitTime;
+		double avgEmergencies = Launcher.citizens.size()/(maxWaitTime+1);
 		
 		data.setCivilStations(Launcher.stations.size());
 		data.setAvgAmbulances(avgAmbulances);
